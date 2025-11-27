@@ -418,9 +418,9 @@ def predict():
         
         # Convert prediction to output message
         if prediction_result == 0:
-            output = f"No, There is No Chance of Road Accident. (Predicted using {prediction_method} system)"
+            output = "No, There is No Chance of Road Accident."
         else:
-            output = f"Yes, There is a Chance Of Road Accident! Be Careful. (Predicted using {prediction_method} system)"
+            output = "Yes, There is a Chance Of Road Accident! Be Careful."
             
     except Exception as e:
         print(f"❌ Prediction error: {e}")
