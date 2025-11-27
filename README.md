@@ -193,6 +193,28 @@ response = requests.post(
 )
 ```
 
+## 📸 Application Screenshots
+
+### 🏠 Homepage Interface
+![Homepage](https://via.placeholder.com/800x400/1e3a8a/ffffff?text=Road+Accident+Prediction+System+Homepage)
+
+*Clean, professional homepage with easy navigation and project overview*
+
+### 🎯 Prediction Interface
+![Prediction Form](https://via.placeholder.com/800x500/059669/ffffff?text=Interactive+Prediction+Form+with+14+Parameters)
+
+*User-friendly prediction form with dropdown selections for all 14 risk factors*
+
+### 📊 Results Display
+![Prediction Results](https://via.placeholder.com/800x300/dc2626/ffffff?text=Real-time+ML+Prediction+Results)
+
+*Instant prediction results with confidence scores and risk assessment*
+
+### 📈 Analytics Dashboard
+![Analytics Dashboard](https://via.placeholder.com/800x400/7c3aed/ffffff?text=Performance+Analytics+%26+Model+Metrics)
+
+*Comprehensive analytics with model performance metrics and visualizations*
+
 ## 🎮 Live Demo Features
 
 ### 🚀 Try These Features Live:
@@ -275,6 +297,22 @@ curl https://road-accident-prediction-app.onrender.com/debug
 }
 ```
 
+## 🏗️ Architecture Overview
+
+### System Architecture Diagram
+![System Architecture](https://via.placeholder.com/800x500/1e293b/ffffff?text=Flask+%E2%86%92+ML+Model+%E2%86%92+Render+Deployment+%E2%86%92+User+Interface)
+
+**Components:**
+- 🌐 **Frontend**: HTML5/CSS3/Bootstrap responsive interface
+- ⚙️ **Backend**: Flask web framework with Python 3.11
+- 🤖 **ML Engine**: Gradient Boosting Classifier + Rule-based fallback  
+- 🗄️ **Data Layer**: CSV datasets with feature encoding
+- ☁️ **Deployment**: Docker containerized on Render platform
+- 🔄 **CI/CD**: Automatic deployment from GitHub commits
+
+### Data Flow Diagram
+![Data Flow](https://via.placeholder.com/800x300/0f172a/ffffff?text=User+Input+%E2%86%92+Feature+Encoding+%E2%86%92+ML+Prediction+%E2%86%92+Result+Display)
+
 ## 🚀 Deployment Process
 
 ### Automatic Deployment
@@ -314,6 +352,8 @@ git push origin main
 ## 🎯 Sample Prediction Scenarios
 
 ### 🔴 High Risk Scenario
+![High Risk Prediction](https://via.placeholder.com/600x200/dc2626/ffffff?text=HIGH+RISK+PREDICTION)
+
 ```yaml
 State: "Uttar Pradesh"          # High accident rate state
 Junction: "Four Arms"           # Complex intersection
@@ -324,10 +364,13 @@ Area: "Urban"                   # Heavy traffic
 Weather: "Fog"                  # Poor visibility
 Time: "Night"                   # Low visibility period
 
-Prediction: 🔴 "High Accident Risk" (85% confidence)
+Prediction: 🔴 "Yes, There is a Chance Of Road Accident! Be Careful."
+Risk Score: 12/17 points | Confidence: 85%
 ```
 
 ### 🟢 Low Risk Scenario
+![Low Risk Prediction](https://via.placeholder.com/600x200/059669/ffffff?text=LOW+RISK+PREDICTION)
+
 ```yaml
 State: "Kerala"                 # Lower accident rate
 Junction: "No Junction"         # Straight road
@@ -338,8 +381,60 @@ Area: "Rural"                   # Less traffic
 Weather: "Clear"               # Good visibility
 Time: "Day"                     # Good visibility
 
-Prediction: 🟢 "Low Accident Risk" (92% confidence)
+Prediction: 🟢 "No, There is No Chance of Road Accident."
+Risk Score: 2/17 points | Confidence: 92%
 ```
+
+### 🟡 Moderate Risk Scenario
+![Moderate Risk Prediction](https://via.placeholder.com/600x200/f59e0b/ffffff?text=MODERATE+RISK+PREDICTION)
+
+```yaml
+State: "Karnataka"              # Moderate risk state
+Junction: "T-Junction"          # Moderate complexity
+Vehicle Age: "5-10 years"       # Mid-age vehicle
+Human Age/Sex: "Male 25-35"     # Moderate risk group
+Safety Precautions: "Yes"       # Safety measures used
+Area: "Urban"                   # Heavy traffic
+Weather: "Sunny"               # Good visibility
+Time: "Day"                     # Good visibility
+
+Prediction: 🟡 "Moderate risk - Drive carefully"
+Risk Score: 5/17 points | Confidence: 78%
+```
+
+## 🖥️ User Interface Walkthrough
+
+### Step 1: Homepage Navigation
+![Navigation](https://via.placeholder.com/700x150/1f2937/ffffff?text=Easy+Navigation+%E2%86%92+Login+%E2%86%92+Prediction+%E2%86%92+Results)
+
+### Step 2: Parameter Selection
+![Parameter Selection](https://via.placeholder.com/700x400/3730a3/ffffff?text=Select+from+14+Risk+Factors+via+Dropdown+Menus)
+
+**Available Parameters:**
+- 🗺️ **36 States/UTs** - Complete coverage of Indian territories
+- 🛣️ **6 Junction Types** - From simple roads to complex intersections
+- 🚗 **5 Vehicle Ages** - New to very old vehicles
+- 👤 **14 Demographics** - Age and gender combinations
+- ⚠️ **2 Safety Levels** - With or without precautions
+- 🏘️ **4 Area Types** - Rural to commercial zones
+- 📍 **2 Place Types** - Urban vs rural settings
+- 📦 **3 Load Types** - Vehicle loading conditions
+- 🚦 **5 Violation Types** - Traffic rule compliance
+- 🌤️ **5 Weather Types** - Clear to severe conditions
+- 🚛 **16 Vehicle Types** - Comprehensive vehicle categories
+- 🛤️ **8 Road Types** - Infrastructure variations
+- 📋 **3 License Types** - Valid, learner, or invalid
+- ⏰ **9 Time Periods** - 24-hour risk assessment
+
+### Step 3: Instant Results
+![Results Display](https://via.placeholder.com/700x250/059669/ffffff?text=Instant+ML+Prediction+with+Risk+Assessment)
+
+## 📱 Mobile Responsive Design
+
+### 📱 Mobile Interface
+![Mobile Interface](https://via.placeholder.com/300x600/6366f1/ffffff?text=Mobile+Friendly+Design)
+
+*Optimized for all devices with responsive Bootstrap framework*
 
 ## 📝 Usage Instructions
 
@@ -408,6 +503,33 @@ Want to test immediately? Try this:
 4. 🚀 **Get Results**: Instant ML prediction with confidence score!
 
 > **Pro Tip**: Try different combinations to see how various factors affect accident probability!
+
+## 📸 Live Application Preview
+
+### 🎬 Application Demo Flow
+![Demo Flow](https://via.placeholder.com/1000x600/1e40af/ffffff?text=Complete+Application+Walkthrough)
+
+**Try these combinations for different results:**
+
+| Scenario | State | Junction | Vehicle Age | Traffic Violation | Weather | Expected Result |
+|----------|-------|----------|-------------|------------------|---------|-----------------|
+| **Safe** | Kerala | No Junction | 1-5 years | None | Clear | 🟢 No Accident |
+| **Risky** | UP | Four Arms | 15+ years | Over-speeding | Fog | 🔴 Accident Risk |
+| **Moderate** | Karnataka | T-Junction | 5-10 years | None | Rain | 🟡 Moderate Risk |
+
+### 🖼️ Feature Highlights Gallery
+
+#### Real-time Predictions
+![Real-time Predictions](https://via.placeholder.com/400x250/16a34a/ffffff?text=Instant+ML+Predictions)
+
+#### Data Analytics
+![Analytics](https://via.placeholder.com/400x250/9333ea/ffffff?text=Performance+Analytics)
+
+#### Mobile Support
+![Mobile](https://via.placeholder.com/200x400/0ea5e9/ffffff?text=Mobile+Responsive)
+
+#### Health Monitoring  
+![Health Check](https://via.placeholder.com/400x250/dc2626/ffffff?text=System+Health+Status)
 
 ---
 
