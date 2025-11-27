@@ -230,39 +230,60 @@ def create_deployment_model():
         traceback.print_exc()
         return None
 
-# Load model with robust error handling
+# Load model with robust error handling and force regeneration on deployment
 model = None
+FORCE_REGENERATE = os.environ.get('FORCE_REGENERATE_MODEL', 'false').lower() == 'true'
+
 print("🚀 Loading Road Accident Prediction Model...")
 
-try:
-    model_path = 'model.pkl'
-    if os.path.exists(model_path):
-        with open(model_path, 'rb') as f:
-            model = pickle.load(f)
-        print("✅ Model loaded successfully from model.pkl")
-        print(f"   Model type: {type(model).__name__}")
-        
-        # Verify it's the correct model type
-        if not hasattr(model, 'predict') or not hasattr(model, 'predict_proba'):
-            raise ValueError("Loaded model doesn't have required methods")
-            
-        # Test with a simple prediction to ensure it works
-        test_input = [[16, 4, 4, 1, 0, 3, 1, 0, 3, 4, 11, 7, 1, 2]]  # Sample data
-        try:
-            test_pred = model.predict(test_input)
-            print(f"   Model test successful: {test_pred}")
-        except Exception as test_error:
-            print(f"   Model test failed: {test_error}")
-            raise ValueError("Model prediction test failed")
-            
-    else:
-        print(f"❌ Model file not found at {model_path}")
-        model = create_deployment_model()
-        
-except Exception as e:
-    print(f"❌ Error loading model: {e}")
-    print("   Creating fresh deployment model...")
+if FORCE_REGENERATE:
+    print("🔄 Force regeneration enabled - creating fresh model...")
     model = create_deployment_model()
+else:
+    try:
+        model_path = 'model.pkl'
+        if os.path.exists(model_path):
+            with open(model_path, 'rb') as f:
+                model = pickle.load(f)
+            print("✅ Model loaded successfully from model.pkl")
+            print(f"   Model type: {type(model).__name__}")
+            
+            # Verify it's the correct model type (GradientBoostingClassifier)
+            expected_type = 'GradientBoostingClassifier'
+            if type(model).__name__ != expected_type:
+                print(f"⚠️ Wrong model type! Expected {expected_type}, got {type(model).__name__}")
+                print("   Regenerating correct model...")
+                model = create_deployment_model()
+            elif not hasattr(model, 'predict') or not hasattr(model, 'predict_proba'):
+                print("❌ Loaded model doesn't have required methods")
+                model = create_deployment_model()
+            else:
+                # Test with a simple prediction to ensure it works
+                test_input = [[16, 4, 4, 1, 0, 3, 1, 0, 3, 4, 11, 7, 1, 2]]  # Sample data
+                try:
+                    test_pred = model.predict(test_input)
+                    test_proba = model.predict_proba(test_input)
+                    print(f"   Model test successful: {test_pred} (prob: {test_proba[0]})")
+                except Exception as test_error:
+                    print(f"   Model test failed: {test_error}")
+                    print("   Regenerating working model...")
+                    model = create_deployment_model()
+        else:
+            print(f"❌ Model file not found at {model_path}")
+            model = create_deployment_model()
+            
+    except Exception as e:
+        print(f"❌ Error loading model: {e}")
+        
+        # Check if we're in deployment environment
+        is_deployment = os.environ.get('PORT') is not None or '/app' in os.getcwd()
+        
+        if is_deployment:
+            print("🏥 Deployment environment detected - forcing model regeneration...")
+        else:
+            print("   Creating fresh deployment model...")
+            
+        model = create_deployment_model()
 
 # Final check
 if model is None:
