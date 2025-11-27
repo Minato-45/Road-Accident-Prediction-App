@@ -1,6 +1,7 @@
 from flask import Flask, request, render_template
 import pandas as pd
 import pickle
+import numpy as np
 import resources.data as data
 import warnings
 import os
@@ -234,44 +235,97 @@ def create_deployment_model():
 model = None
 print("🚀 Initializing Road Accident Prediction System...")
 
-# Try to load the model, but don't fail if it doesn't work
+# Enhanced model loading with comprehensive validation
+print("🚀 Initializing Road Accident Prediction System...")
+model = None
+
 try:
     if os.path.exists('model.pkl'):
         with open('model.pkl', 'rb') as f:
             model = pickle.load(f)
-        print(f"✅ Model loaded: {type(model).__name__}")
+        print(f"✅ Model loaded successfully: {type(model).__name__}")
         
-        # Quick test
-        test_data = [[16, 4, 4, 1, 0, 3, 1, 0, 3, 4, 11, 7, 1, 2]]
-        test_pred = model.predict(test_data)
-        print(f"   Test prediction: {test_pred[0]}")
+        # Comprehensive model validation with multiple test scenarios
+        try:
+            test_scenarios = [
+                [17, 1, 4, 6, 1, 3, 0, 0, 0, 4, 6, 7, 1, 3],  # Safe scenario
+                [1, 4, 4, 1, 0, 3, 1, 0, 3, 4, 11, 0, 1, 2],   # Risky scenario
+            ]
+            
+            for i, test_input in enumerate(test_scenarios):
+                test_array = np.array([test_input])
+                prediction = model.predict(test_array)
+                proba = model.predict_proba(test_array)[0]
+                print(f"   Test {i+1}: prediction={prediction[0]}, confidence=[{proba[0]:.3f}, {proba[1]:.3f}]")
+                
+            print("🎯 Model validation successful!")
+            
+        except Exception as test_error:
+            print(f"⚠️ Model validation failed: {test_error}")
+            print("🔧 Model appears corrupted, will create new one if needed...")
+            # Don't set model to None here, let it try in deployment
+            
+    else:
+        print("⚠️ model.pkl not found")
+        model = None
+        
 except Exception as e:
-    print(f"⚠️ Model loading failed: {e}")
+    print(f"⚠️ Model loading error: {e}")
     model = None
 
 # Create a simple rule-based prediction system as fallback
 def rule_based_prediction(features):
-    """Simple rule-based prediction when ML model is unavailable"""
+    """Improved rule-based prediction system based on real risk factors"""
     try:
-        # Extract risk factors from the encoded features
-        state_risk = features[0] if features[0] < 20 else features[0] - 20  # Normalize state risk
-        junction_risk = features[1] * 2  # Junction complexity
-        vehicle_age_risk = features[2] * 3  # Older vehicles = higher risk
-        traffic_violation_risk = features[8] * 4  # Traffic violations = high risk
-        weather_risk = (4 - features[9]) if features[9] <= 4 else 0  # Bad weather = higher risk
-        area_risk = features[5] * 1.5  # Area type risk
+        risk_score = 0
         
-        # Calculate total risk score
-        total_risk = (junction_risk + vehicle_age_risk + traffic_violation_risk + 
-                     weather_risk + area_risk + state_risk)
+        # High-risk junctions (T-Junction=4, Y-Junction=5, Four Way=3)
+        if features[1] in [3, 4, 5]:
+            risk_score += 2
         
-        # Convert to prediction (threshold-based)
-        # Higher threshold = more conservative (fewer accident predictions)
-        risk_threshold = 15
+        # Older vehicles (10+ years = codes 2,3)
+        if features[2] in [2, 3]:
+            risk_score += 2
+            
+        # Young drivers (18-25 = codes 1,2,3,4) or very old (65+ = codes 11,12,13)
+        if features[3] in [1, 2, 3, 4, 11, 12, 13]:
+            risk_score += 1
+            
+        # High-risk traffic violations (Over-speeding=3, Jumping Red Light=2, Wrong Side=0)
+        if features[8] in [0, 2, 3]:
+            risk_score += 3
+            
+        # Bad weather conditions (Fog/Mist=0, Rainy=1, Snowy=3)
+        if features[9] in [0, 1, 3]:
+            risk_score += 2
+            
+        # High-risk vehicle types (Two wheelers=15, Heavy vehicles=8,9)
+        if features[10] in [8, 9, 15]:
+            risk_score += 1
+            
+        # High-risk road types (Bridge=0, Hill Road=2, Pothole Road=3)
+        if features[11] in [0, 2, 3]:
+            risk_score += 2
+            
+        # Invalid/No license (codes 0, 2)
+        if features[12] in [0, 2]:
+            risk_score += 2
+            
+        # High-risk time periods (Night hours: 0,1,7,8)
+        if features[13] in [0, 1, 7, 8]:
+            risk_score += 1
+            
+        # Urban areas with heavy traffic
+        if features[6] == 1 and features[5] in [1, 2]:  # Urban + Commercial/Industrial
+            risk_score += 1
+            
+        print(f"🧮 Rule-based risk score: {risk_score}/17")
         
-        return 1 if total_risk > risk_threshold else 0
-    except:
-        # If all else fails, return a conservative prediction
+        # Conservative threshold: predict accident only for genuinely high-risk scenarios
+        return 1 if risk_score >= 6 else 0
+        
+    except Exception as e:
+        print(f"⚠️ Rule-based prediction error: {e}")
         return 0
 
 # System status
@@ -398,20 +452,27 @@ def predict():
         
         print(f"📊 Encoded features: {encoded_features}")
         
-        # Try ML model first, fall back to rule-based if needed
+        # Try ML model first with better error handling
         if model is not None:
             try:
-                testDataFrame = pd.DataFrame.from_dict(testData)
-                prediction = model.predict(testDataFrame)
-                prediction_result = prediction[0]
+                # Use numpy array directly for better compatibility
+                input_array = np.array([encoded_features])
+                prediction = model.predict(input_array)
+                prediction_result = int(prediction[0])
                 prediction_method = "ML"
                 print(f"🤖 ML Prediction: {prediction_result}")
+                
+                # Verify prediction makes sense
+                if prediction_result not in [0, 1]:
+                    raise ValueError(f"Invalid prediction: {prediction_result}")
+                    
             except Exception as ml_error:
-                print(f"⚠️ ML prediction failed: {ml_error}")
+                print(f"⚠️ ML prediction failed, using rule-based fallback: {ml_error}")
                 prediction_result = rule_based_prediction(encoded_features)
                 prediction_method = "Rule-based"
                 print(f"📊 Rule-based prediction: {prediction_result}")
         else:
+            print("⚠️ ML model not available, using rule-based system")
             prediction_result = rule_based_prediction(encoded_features)
             prediction_method = "Rule-based"
             print(f"📊 Rule-based prediction: {prediction_result}")
