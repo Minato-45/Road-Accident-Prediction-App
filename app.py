@@ -1,13 +1,111 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, redirect, url_for, flash, session, jsonify
 import pandas as pd
 import pickle
 import numpy as np
 import resources.data as data
 import warnings
 import os
+import json
+import hashlib
+from datetime import datetime
+import secrets
 warnings.filterwarnings('ignore')
 
 app = Flask(__name__)
+
+# Configure Flask app for sessions
+app.secret_key = secrets.token_hex(16)  # Generate secure secret key
+app.config['SESSION_TYPE'] = 'filesystem'
+
+# User storage file
+USERS_FILE = 'users.json'
+
+# Initialize users file if it doesn't exist
+def init_users_file():
+    """Initialize users.json file if it doesn't exist"""
+    if not os.path.exists(USERS_FILE):
+        with open(USERS_FILE, 'w') as f:
+            json.dump({}, f)
+        print("📁 Created users.json file for user storage")
+
+# Password hashing functions
+def hash_password(password):
+    """Hash password using SHA-256"""
+    return hashlib.sha256(password.encode()).hexdigest()
+
+def verify_password(stored_password, provided_password):
+    """Verify password against stored hash"""
+    return stored_password == hashlib.sha256(provided_password.encode()).hexdigest()
+
+# User management functions
+def load_users():
+    """Load users from JSON file"""
+    try:
+        with open(USERS_FILE, 'r') as f:
+            return json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return {}
+
+def save_users(users):
+    """Save users to JSON file"""
+    with open(USERS_FILE, 'w') as f:
+        json.dump(users, f, indent=2)
+
+def create_user(fullname, email, username, password):
+    """Create a new user account"""
+    users = load_users()
+    
+    # Check if username or email already exists
+    for user_id, user_data in users.items():
+        if user_data['username'] == username:
+            return False, "Username already exists"
+        if user_data['email'] == email:
+            return False, "Email already registered"
+    
+    # Create new user
+    user_id = str(len(users) + 1)
+    users[user_id] = {
+        'fullname': fullname,
+        'email': email,
+        'username': username,
+        'password': hash_password(password),
+        'created_at': datetime.now().isoformat(),
+        'last_login': None
+    }
+    
+    save_users(users)
+    return True, "User created successfully"
+
+def authenticate_user(username, password):
+    """Authenticate user login"""
+    users = load_users()
+    
+    for user_id, user_data in users.items():
+        if user_data['username'] == username:
+            if verify_password(user_data['password'], password):
+                # Update last login
+                users[user_id]['last_login'] = datetime.now().isoformat()
+                save_users(users)
+                return True, user_data
+            else:
+                return False, "Invalid password"
+    
+    return False, "Username not found"
+
+def is_logged_in():
+    """Check if user is logged in"""
+    return 'user_id' in session
+
+def get_current_user():
+    """Get current logged in user data"""
+    if 'user_id' in session:
+        users = load_users()
+        return users.get(session['user_id'])
+    return None
+
+# Initialize users file on startup
+init_users_file()
+print("👤 User authentication system initialized")
 
 def robust_feature_mapping(feature_value, feature_type=""):
     """Robust mapping of feature values to codes with fallbacks for variations"""
@@ -343,17 +441,118 @@ def first():
 
 @app.route('/upload') 
 def upload():
-	return render_template('upload.html') 
+    if not is_logged_in():
+        flash('Please log in to access this feature.', 'error')
+        return redirect(url_for('login'))
+    return render_template('upload.html') 
+
 @app.route('/preview',methods=["POST"])
 def preview():
+    if not is_logged_in():
+        flash('Please log in to access this feature.', 'error')
+        return redirect(url_for('login'))
     if request.method == 'POST':
         dataset = request.files['datasetfile']
         df = pd.read_csv(dataset,encoding = 'unicode_escape')
         df.set_index('Id', inplace=True)
         return render_template("preview.html",df_view = df)   
-@app.route('/login') 
+@app.route('/login', methods=['GET', 'POST']) 
 def login():
-	return render_template('login.html') 
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        
+        if not username or not password:
+            flash('Please fill in all fields', 'error')
+            return render_template('login.html')
+        
+        success, result = authenticate_user(username, password)
+        
+        if success:
+            # Store user session
+            users = load_users()
+            for user_id, user_data in users.items():
+                if user_data['username'] == username:
+                    session['user_id'] = user_id
+                    session['username'] = username
+                    session['fullname'] = user_data['fullname']
+                    break
+            
+            flash(f'Welcome back, {result["fullname"]}!', 'success')
+            return redirect(url_for('upload'))  # Redirect to main app
+        else:
+            flash(result, 'error')
+            return render_template('login.html')
+    
+    return render_template('login.html')
+
+@app.route('/register', methods=['GET', 'POST']) 
+def register():
+    if request.method == 'POST':
+        fullname = request.form.get('fullname')
+        email = request.form.get('email')
+        username = request.form.get('username')
+        password = request.form.get('password')
+        confirm_password = request.form.get('confirm_password')
+        
+        # Server-side validation
+        if not all([fullname, email, username, password, confirm_password]):
+            flash('Please fill in all fields', 'error')
+            return render_template('register.html')
+        
+        if password != confirm_password:
+            flash('Passwords do not match', 'error')
+            return render_template('register.html')
+        
+        if len(password) < 6:
+            flash('Password must be at least 6 characters long', 'error')
+            return render_template('register.html')
+        
+        # Email validation (basic)
+        if '@' not in email or '.' not in email:
+            flash('Please enter a valid email address', 'error')
+            return render_template('register.html')
+        
+        # Create user
+        success, message = create_user(fullname, email, username, password)
+        
+        if success:
+            flash('Registration successful! Please log in.', 'success')
+            return redirect(url_for('login'))
+        else:
+            flash(message, 'error')
+            return render_template('register.html')
+    
+    return render_template('register.html')
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    flash('You have been logged out successfully.', 'info')
+    return redirect(url_for('first'))
+
+@app.route('/users')
+def list_users():
+    """Admin endpoint to view all registered users (for development/testing)"""
+    users = load_users()
+    user_list = []
+    
+    for user_id, user_data in users.items():
+        user_info = {
+            'id': user_id,
+            'fullname': user_data['fullname'],
+            'username': user_data['username'],
+            'email': user_data['email'],
+            'created_at': user_data['created_at'],
+            'last_login': user_data.get('last_login', 'Never')
+        }
+        user_list.append(user_info)
+    
+    return jsonify({
+        'total_users': len(user_list),
+        'users': user_list
+    })
+
 @app.route('/chart') 
 def chart():
 	return render_template('chart.html') 
@@ -403,6 +602,9 @@ def debug_info():
 
 @app.route('/home')
 def home():
+    if not is_logged_in():
+        flash('Please log in to access this feature.', 'error')
+        return redirect(url_for('login'))
     return render_template('index.html',states = data.state, junctions = data.junction, vechicleAge = data.vehicle_age, 
                            humanAgeSex = data.human_age_sex, personWithoutPrecautions = data.person_without_precautions, 
                            areas = data.area, typeOfPlace = data.type_of_place, vehicleLoad = data.vehicle_load, 
@@ -410,9 +612,30 @@ def home():
                            vehicleTypeSex = data.vehicle_type_sex, roadType = data.road_type, License = data.license_type, 
                            time = data.time)
 
+@app.route('/dashboard')
+def dashboard():
+    if not is_logged_in():
+        flash('Please log in to access this feature.', 'error')
+        return redirect(url_for('login'))
+    
+    user = get_current_user()
+    users = load_users()
+    total_users = len(users)
+    
+    return render_template('index.html',
+                           states = data.state, junctions = data.junction, vechicleAge = data.vehicle_age, 
+                           humanAgeSex = data.human_age_sex, personWithoutPrecautions = data.person_without_precautions, 
+                           areas = data.area, typeOfPlace = data.type_of_place, vehicleLoad = data.vehicle_load, 
+                           trafficRulesViolation = data.traffic_rules_violation, weather = data.weather, 
+                           vehicleTypeSex = data.vehicle_type_sex, roadType = data.road_type, License = data.license_type, 
+                           time = data.time, user=user, total_users=total_users)
+
 
 @app.route('/predict', methods = ['POST'])
 def predict():
+    if not is_logged_in():
+        flash('Please log in to use the prediction feature.', 'error')
+        return redirect(url_for('login'))
     # Get prediction using available system
     global model
     prediction_result = None

@@ -52,17 +52,13 @@ https://templatemo.com/tm-548-training-studio
                           <a href="index.html" class="logo">Road   <em> Accident</em></a>
                         <!-- ***** Logo End ***** -->
                         <!-- ***** Menu Start ***** -->
-                         <ul class="nav">
-                                   <li class="scroll-to-section"><a href="{{url_for('first')}}" class="active">Home</a></li>
+                        <ul class="nav">
+                                   <li class="scroll-to-section"><a href="{{url_for('first')}}">Home</a></li>
                             <li class="scroll-to-section"><a href="{{url_for('login')}}">Login</a></li>
-                            <li class="scroll-to-section"><a href="{{url_for('register')}}">Register</a></li>
+                            <li class="scroll-to-section"><a href="{{url_for('register')}}" class="active">Register</a></li>
 							  <li class="scroll-to-section"><a href="{{url_for('upload')}}">Upload</a></li>
 							 
-							  	  <li class="scroll-to-section"><a href="{{url_for('home')}}">prediction</a></li>
-								   <li class="scroll-to-section"><a href="{{url_for('performance')}}">performance_analysis</a></li>
-								   <li class="scroll-to-section"><a href="{{url_for('chart')}}">Chart</a></li>
-								    <li class="scroll-to-section"><a href="{{url_for('first')}}">logout</a></li>
-                        </ul>            
+                        </ul>        
                         <a class='menu-trigger'>
                             <span>Menu</span>
                         </a>
@@ -110,104 +106,138 @@ https://templatemo.com/tm-548-training-studio
                     <div class="schedule-table filtering">
                           </br>
 						  </br>
-						  </br>
-					   <center><h2>CHART</h2></center>
-					   
-					   </br>
-					   </br>
-		  <head>
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script type="text/javascript">
-      google.charts.load("current", {packages:["corechart"]});
-      google.charts.setOnLoadCallback(drawChart);
-      function drawChart() {
-        var data = google.visualization.arrayToDataTable([
-          ['age', 'Hours per Day'],
-          ['< 18 Years',     23.78],
+						 <center><h1>Register</h1></center>
+            </div>
+			<head>
+
+        
          
-          ['18 - 25 Years',    32.6],
-		  ['25 - 35 Years',     19.5],
-		  ['35 - 40 Years',     14.56],
-		  ['45 - 60 Years',     18.5],
-		  ['> 60 Years',     7.2],
-        ]);
+	 <style>
 
-        var options = {
-          title: '',
-          is3D: true,
-        };
 
-        var chart = new google.visualization.PieChart(document.getElementById('piechart_3d'));
-        chart.draw(data, options);
-      }
-	  
+ 
+ 
+    </style>
+		 <script>
+        addEventListener("load", function () {
+            setTimeout(hideURLbar, 0);
+        }, false);
+
+        function hideURLbar() {
+            window.scrollTo(0, 1);
+        }
+
+        // Client-side validation is now handled by HTML5 and server-side validation
+
     </script>
-  </head>
-  <body>
-    <center><h1>Accidents with respect to age</h1></center>
+	
+</head>
+
+ <body id="page-top">
+
    
-  <center>  <div id="piechart_3d" style="width: 900px; height: 500px; "></div></center>
-	 
-  </body>
-		  
-		   
-		</br>
-</br>
-</br>
-<html>
-  <head>
-  <center> <h1>Total Accidents In Residentia Area(Male and Female)</h1></center>
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script type="text/javascript">
-      google.charts.load('current', {'packages':['bar']});
-      google.charts.setOnLoadCallback(drawStuff);
+ 
 
-      function drawStuff() {
-        var data = new google.visualization.arrayToDataTable([
-          ['state', 'Male', 'Female'],
-          ['Uttar Pradesh', 21000, 23.3],
-          ['Maharashtra', 24000, 4.5],
-          ['Bihar', 30000, 14.3],
-		   ['Tamil Nadu', 30000, 14.3]
-           
-         
-        ]);
+  <!-- Portfolio Section -->
+  <section class="page-section portfolio" id="portfolio">
+ 
+      <br>
+	  <br>
+      <!-- Portfolio Section Heading -->
+       
+      <!-- Icon Divider -->
+    
 
-        var options = {
-          width: 800,
-          chart: {
-            title: ' ',
-            subtitle: ''
-          },
-          bars: 'vertical', // Required for Material Bar Charts.
-          series: {
-            0: { axis: 'Female' }, // Bind series 0 to an axis named 'distance'.
-            1: { axis: 'Male' } // Bind series 1 to an axis named 'brightness'.
-          },
-          axes: {
-            x: {
-              Female: {label: 'parsecs'}, // Bottom x-axis.
-              Male: {side: 'top', label: 'Gender'} // Top x-axis.
-            }
-          }
-        };
+      <!-- Portfolio Grid Items -->
+      <div class="row">
 
-      var chart = new google.charts.Bar(document.getElementById('dual_x_div'));
-      chart.draw(data, options);
-    };
-    </script>
-  </head>
-  <body>
-    <center><div id="dual_x_div" style="width: 900px; height: 500px;"></div></center>
-  </body>
-</html>	
-		   		
-		   
-		   
-		   
-		   
-		   
+        <!-- Portfolio Item 1 -->
+        <div class="col-md-8 col-lg-6" style="margin-left:250px">
+            
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ 'danger' if category == 'error' else 'success' if category == 'success' else 'info' }}" style="margin-bottom: 20px;">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            
+            <form method="POST" action="{{ url_for('register') }}">
+                <!-- Full Name Field -->
+                <div class="control-group">
+                    <label class="control-label" for="fullname"><b>Full Name</b></label>
+                    <div class="controls">
+                        <input type="text" id="fullname" name="fullname" placeholder="Enter your full name" class="form-control" required>
+                    </div>
+                </div>
+                <br>
+                
+                <!-- Email Field -->
+                <div class="control-group">
+                    <label class="control-label" for="email"><b>Email Address</b></label>
+                    <div class="controls">
+                        <input type="email" id="email" name="email" placeholder="Enter your email address" class="form-control" required>
+                    </div>
+                </div>
+                <br>
+                
+                <!-- Username Field -->
+                <div class="control-group">
+                    <label class="control-label" for="username"><b>Username</b></label>
+                    <div class="controls">
+                        <input type="text" id="username" name="username" placeholder="Choose a username" class="form-control" required>
+                    </div>
+                </div>
+                <br>
+                
+                <!-- Password Field -->
+                <div class="control-group">
+                    <label class="control-label" for="password"><b>Password</b></label>
+                    <div class="controls">
+                        <input type="password" id="password" name="password" placeholder="Create a password" class="form-control" minlength="6" required>
+                    </div>
+                </div>
+                <br>
+                
+                <!-- Confirm Password Field -->
+                <div class="control-group">
+                    <label class="control-label" for="confirm_password"><b>Confirm Password</b></label>
+                    <div class="controls">
+                        <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm your password" class="form-control" minlength="6" required>
+                    </div>
+                </div>
+                <br>
+                
+                <!-- Register Button -->
+                <div class="control-group">
+                    <div class="controls">
+                        <input type="submit" class="btn btn-success" value="Register" style="margin-left: 200px; padding: 10px 30px;">
+                    </div>
+                </div>
+            </form>
+            
+            <!-- Login Link -->
+            <div class="control-group">
+                <div class="controls" style="text-align: center; margin-top: 20px;">
+                    <p style="color: #fff;">Already have an account? 
+                        <a href="{{url_for('login')}}" style="color: #ed563b; font-weight: bold;">Login here</a>
+                    </p>
+                </div>
+            </div>
+            
         </div>
+      </div>
+ 
+ 
+  </section>
+
+
+  
+
+    </body>
  
 						 
 						 
