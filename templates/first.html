@@ -23,6 +23,13 @@ https://templatemo.com/tm-548-training-studio
     <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/font-awesome.css')}}">
 
     <link rel="stylesheet" href="{{url_for('static', filename='css/templatemo-training-studio.css')}}">
+    
+    <!-- Responsive CSS -->
+    <link rel="stylesheet" href="{{url_for('static', filename='css/responsive.css')}}">
+    
+    <!-- Mobile optimization meta tags -->
+    <meta name="theme-color" content="#ed563b">
+    <meta name="apple-mobile-web-app-capable" content="yes">
 
     </head>
     
@@ -122,6 +129,30 @@ Mining Techniques
     
     <!-- Global Init -->
     <script src="{{url_for('static', filename='js/custom.js')}}"></script>
+    
+    <!-- Mobile Navigation Toggle -->
+    <script>
+    $(document).ready(function() {
+        $('.menu-trigger').click(function() {
+            $(this).toggleClass('active');
+            $('.main-nav .nav').slideToggle();
+        });
+        
+        $('.main-nav .nav li a').click(function() {
+            if ($(window).width() < 768) {
+                $('.main-nav .nav').slideUp();
+                $('.menu-trigger').removeClass('active');
+            }
+        });
+        
+        $(window).resize(function() {
+            if ($(window).width() > 767) {
+                $('.main-nav .nav').removeAttr('style');
+                $('.menu-trigger').removeClass('active');
+            }
+        });
+    });
+    </script>
 
   </body>
 </html>

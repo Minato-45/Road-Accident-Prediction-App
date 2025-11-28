@@ -17,10 +17,28 @@ A sophisticated machine learning-powered web application that predicts road acci
 
 ### 🎯 Core Functionality
 - **Real-time Accident Prediction**: Advanced ML model predicting accident probability with 93.1% accuracy
+- **🔐 User Authentication System**: Secure registration, login, and session management
+- **📱 Mobile & PC Compatible**: Fully responsive design for all device types
 - **Interactive Web Interface**: User-friendly forms with dropdown selections for all input parameters
 - **Comprehensive Data Analysis**: Built-in visualization and performance analytics
 - **Dataset Management**: Upload, preview, and train custom datasets
 - **Multi-page Navigation**: Dedicated pages for prediction, analysis, charts, and performance metrics
+
+### 🔐 Authentication & User Management
+- **🆕 User Registration**: Secure account creation with email validation
+- **🔒 Login System**: Username/password authentication with session management
+- **👤 User Profiles**: Personal account management with registration tracking
+- **🛡️ Route Protection**: Authenticated access to prediction and upload features
+- **💾 Persistent Storage**: User data stored locally in JSON format with password hashing
+- **🚪 Session Management**: Secure login/logout with flash messaging system
+
+### 📱 Cross-Device Compatibility
+- **📱 Mobile Optimized**: Touch-friendly interface for smartphones
+- **📱 Tablet Support**: Optimized layout for iPad and Android tablets
+- **💻 Desktop Ready**: Enhanced experience for laptop and desktop users
+- **🔄 Responsive Navigation**: Collapsible mobile menu with smooth animations
+- **⚡ Touch Optimization**: 44px+ touch targets for accessibility
+- **🎨 Adaptive Design**: Bootstrap-enhanced responsive framework
 
 ### 🔍 Prediction Parameters
 The system analyzes **14 critical factors**:
@@ -96,7 +114,9 @@ python app.py
 
 ### Backend
 - **🐍 Python 3.11+**: Core programming language
-- **🌶️ Flask 2.3.2**: Web framework
+- **🌶️ Flask 2.3.2**: Web framework with session management
+- **🔐 User Authentication**: SHA-256 password hashing and secure sessions
+- **💾 JSON Database**: Local user storage with CRUD operations
 - **🤖 scikit-learn 1.3.0**: Machine learning library
 - **📊 pandas 2.0.2**: Data manipulation
 - **🔢 NumPy 1.24.3**: Numerical computing
@@ -104,9 +124,11 @@ python app.py
 
 ### Frontend
 - **🎨 HTML5/CSS3**: Structure and styling
-- **⚡ JavaScript**: Interactive functionality
-- **🎨 Bootstrap**: Responsive design framework
-- **🎬 Custom CSS**: TemplateMo training studio theme
+- **📱 Responsive CSS**: Custom mobile-first responsive framework
+- **⚡ JavaScript**: Interactive functionality with mobile navigation
+- **🎨 Bootstrap**: Enhanced responsive design framework
+- **🎬 Custom CSS**: TemplateMo training studio theme with mobile optimization
+- **🔐 Form Security**: Client and server-side validation with CSRF protection
 
 ### Deployment
 - **🐳 Docker**: Containerization
@@ -199,11 +221,14 @@ response = requests.post(
 
 | Feature | URL | Description |
 |---------|-----|-------------|
-| 🏠 **Homepage** | [/first](https://road-accident-prediction-app.onrender.com/first) | Welcome page with project overview |
-| 🎯 **Live Prediction** | [/home](https://road-accident-prediction-app.onrender.com/home) | Real-time accident prediction |
+| 🏠 **Homepage** | [/](https://road-accident-prediction-app.onrender.com/) | Welcome page with project overview |
+| 📝 **Register** | [/register](https://road-accident-prediction-app.onrender.com/register) | Create new user account |
+| 🔑 **Login** | [/login](https://road-accident-prediction-app.onrender.com/login) | User authentication |
+| 🎯 **Live Prediction** | [/dashboard](https://road-accident-prediction-app.onrender.com/dashboard) | Real-time accident prediction (requires login) |
 | 📊 **Analytics** | [/performance](https://road-accident-prediction-app.onrender.com/performance) | Model performance metrics |
 | 📈 **Charts** | [/chart](https://road-accident-prediction-app.onrender.com/chart) | Data visualizations |
-| 📤 **Data Upload** | [/upload](https://road-accident-prediction-app.onrender.com/upload) | Dataset management |
+| 📤 **Data Upload** | [/upload](https://road-accident-prediction-app.onrender.com/upload) | Dataset management (requires login) |
+| 👥 **User API** | [/users](https://road-accident-prediction-app.onrender.com/users) | User management endpoint |
 | 🔍 **Health Check** | [/healthz](https://road-accident-prediction-app.onrender.com/healthz) | System status |
 
 ## 📱 Application Structure
@@ -211,12 +236,15 @@ response = requests.post(
 ```bash
 📁 Road Accident Prediction App
 ├── 🏠 Homepage (/)           → Landing page and navigation
-├── 🔑 Login (/login)         → Admin authentication (admin/admin)
-├── 📤 Upload (/upload)       → Dataset management & CSV upload
-├── 👁️ Preview (/preview)     → Data visualization & preview
-├── 🎯 Prediction (/home)     → Main prediction interface
+├── 🔑 Login (/login)         → User authentication system
+├── 📝 Register (/register)   → User account creation
+├── 🚪 Logout (/logout)       → Session termination
+├── 📤 Upload (/upload)       → Dataset management & CSV upload (Protected)
+├── 👁️ Preview (/preview)     → Data visualization & preview (Protected)
+├── 🎯 Prediction (/dashboard) → Main prediction interface (Protected)
 ├── 📊 Charts (/chart)        → Interactive data analysis charts
 ├── 📈 Performance (/performance) → Model analytics & confusion matrix
+├── 👥 Users (/users)         → User management API endpoint
 ├── 🔍 Health (/healthz)      → System health monitoring
 └── 🛠️ Debug (/debug)         → Development information
 ```
@@ -298,10 +326,13 @@ git push origin main
 
 ### Advanced Features
 - **🔄 Dual Prediction System**: ML model with intelligent rule-based fallback
+- **🔐 Complete Authentication**: User registration, login, and session management
+- **📱 Full Responsiveness**: Mobile-first design with cross-device compatibility
 - **⚡ Performance Optimization**: Efficient prediction processing with sub-second response
 - **🛡️ Error Handling**: Comprehensive validation and never-fail architecture
-- **📱 Responsive Design**: Mobile-friendly interface
-- **🎨 Professional UI**: Modern, intuitive user experience
+- **🔒 Route Protection**: Secure access control for sensitive features
+- **🎨 Professional UI**: Modern, intuitive user experience across all devices
+- **💾 User Data Management**: Secure local storage with password hashing
 - **🔧 Recent Reliability Fixes**: Enhanced deployment consistency (Nov 2025)
 
 ### Innovation
@@ -344,17 +375,31 @@ Prediction: 🟢 "Low Accident Risk" (92% confidence)
 ## 📝 Usage Instructions
 
 ### 🎯 For Live Predictions
-1. **Visit** [the prediction page](https://road-accident-prediction-app.onrender.com/home)
-2. **Select** values for all 14 parameters from dropdowns
-3. **Click** "Predict" for instant ML-powered analysis
-4. **View** results with risk assessment and confidence score
+1. **Register** at [/register](https://road-accident-prediction-app.onrender.com/register) or **Login** at [/login](https://road-accident-prediction-app.onrender.com/login)
+2. **Navigate** to [the prediction page](https://road-accident-prediction-app.onrender.com/dashboard)
+3. **Select** values for all 14 parameters from dropdowns
+4. **Click** "Predict" for instant ML-powered analysis
+5. **View** results with risk assessment and confidence score
+
+### 📱 Mobile Usage
+1. **Open** any page on your mobile device
+2. **Use** the hamburger menu (☰) for navigation
+3. **Fill forms** with touch-optimized input fields
+4. **Navigate** seamlessly between desktop and mobile
 
 ### For Data Analysis
-1. **Login** with admin credentials (admin/admin)
-2. **Upload** CSV datasets for analysis
+1. **Create account** and login to the system
+2. **Upload** CSV datasets for analysis via [/upload](https://road-accident-prediction-app.onrender.com/upload)
 3. **Preview** data structure and quality
 4. **Train** custom models if needed
 5. **View** performance analytics and charts
+
+### 👤 User Management
+1. **Register**: Create account with full name, email, username, and password
+2. **Login**: Authenticate with username/password
+3. **Session**: Stay logged in across pages
+4. **Logout**: Secure session termination
+5. **Protection**: Prediction and upload features require authentication
 
 ## 🤝 Contributing
 
@@ -392,25 +437,51 @@ This project is developed for educational and research purposes in road safety a
 - **📦 Code Cleanup**: Removed unnecessary development files (19 files, ~16K lines)
 - **⚡ Performance**: Faster deployments and improved reliability
 
+### 🆕 Major Feature Additions
+- **🔐 User Authentication System**: Complete registration, login, and session management
+- **📱 Mobile Responsiveness**: Full cross-device compatibility with responsive design
+- **🛡️ Route Protection**: Secure access control for prediction and upload features
+- **💾 User Data Storage**: Local JSON-based user management with password hashing
+- **🎨 Enhanced UI/UX**: Mobile-first design with touch optimization
+- **📲 Responsive Navigation**: Collapsible mobile menu with smooth animations
+
 ### 🎯 System Status
-- **Status**: ✅ Fully Operational
+- **Status**: ✅ Fully Operational with Authentication
 - **Prediction Accuracy**: Both "Yes" and "No" outcomes working correctly
+- **User System**: Registration, login, logout fully functional
+- **Mobile Support**: Complete responsive design for all devices
 - **Deployment**: Render platform with auto-deployment from GitHub
 - **Reliability**: 100% uptime with never-fail prediction system
+
+### 📱 Mobile & Responsive Features
+- **Touch-Friendly**: 44px+ touch targets for accessibility
+- **Mobile Menu**: Hamburger navigation for small screens
+- **Responsive Forms**: Optimized input fields for mobile devices
+- **Cross-Device**: Seamless experience from phone to desktop
+- **Fast Loading**: Optimized CSS and JavaScript for mobile performance
 
 ## 🎯 Quick Test
 
 Want to test immediately? Try this:
 
 1. 🌐 **Visit**: [road-accident-prediction-app.onrender.com](https://road-accident-prediction-app.onrender.com)
-2. 🎯 **Go to Prediction**: Click "prediction" in navigation
-3. 🔧 **Fill Form**: Select any combination of the 14 parameters
-4. 🚀 **Get Results**: Instant ML prediction with confidence score!
+2. 📝 **Register**: Create your account at [/register](https://road-accident-prediction-app.onrender.com/register)
+3. 🔑 **Login**: Sign in at [/login](https://road-accident-prediction-app.onrender.com/login)
+4. 🎯 **Go to Prediction**: Click "Predict" in navigation or visit [/dashboard](https://road-accident-prediction-app.onrender.com/dashboard)
+5. 🔧 **Fill Form**: Select any combination of the 14 parameters
+6. 🚀 **Get Results**: Instant ML prediction with confidence score!
+7. 📱 **Try Mobile**: Test the responsive design on your phone!
 
 > **Pro Tip**: Try different combinations to see how various factors affect accident probability!
+
+### 📱 Mobile Testing
+- **Open** on your smartphone or tablet
+- **Use** the hamburger menu (☰) for navigation  
+- **Test** touch interactions and form inputs
+- **Compare** with desktop experience for consistency
 
 ---
 
 ## ⭐ Star this repository if it helped you!
 
-**Built with ❤️ for road safety and accident prevention through data science**
+**Built with ❤️ for road safety and accident prevention through data science and modern web technology**
