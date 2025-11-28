@@ -27,6 +27,11 @@ Thumbs.db
 .env
 .env.local
 
+# User database files (contain sensitive data)
+users.json
+users.json.backup
+*.json.backup
+
 # Jupyter Notebook checkpoints
 .ipynb_checkpoints/
 
