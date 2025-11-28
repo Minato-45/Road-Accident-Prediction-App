@@ -60,11 +60,10 @@ https://templatemo.com/tm-548-training-studio
                         <!-- ***** Logo End ***** -->
                         <!-- ***** Menu Start ***** -->
                         <ul class="nav">
-                                   <li class="scroll-to-section"><a href="{{url_for('first')}}" class="active">Home</a></li>
-                            <li class="scroll-to-section"><a href="{{url_for('login')}}">Login</a></li>
-                            <li class="scroll-to-section"><a href="{{url_for('register')}}">Register</a></li>
+                                   <li class="scroll-to-section"><a href="{{url_for('first')}}">Home</a></li>
 							  <li class="scroll-to-section"><a href="{{url_for('upload')}}">Upload</a></li>
 							 	  <li class="scroll-to-section"><a href="{{url_for('home')}}">Prediction</a></li>
+                            <li class="scroll-to-section"><a href="{{url_for('logout')}}">LOGOUT{% if session.fullname %} ({{session.fullname}}){% endif %}</a></li>
                         </ul>        
                         <a class='menu-trigger'>
                             <span>Menu</span>
@@ -116,7 +115,7 @@ https://templatemo.com/tm-548-training-studio
             </div>
 			</br>
 			</br>
-			<center> <h2>preview</h2>
+			<center> <h2>Preview</h2>
   </center>
   <head>
 

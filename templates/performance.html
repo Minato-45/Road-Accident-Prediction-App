@@ -61,14 +61,12 @@ https://templatemo.com/tm-548-training-studio
                         <!-- ***** Menu Start ***** -->
                         <ul class="nav">
                                    <li class="scroll-to-section"><a href="{{url_for('first')}}" class="active">Home</a></li>
-                            <li class="scroll-to-section"><a href="{{url_for('login')}}">Login</a></li>
-                            <li class="scroll-to-section"><a href="{{url_for('register')}}">Register</a></li>
 							  <li class="scroll-to-section"><a href="{{url_for('upload')}}">Upload</a></li>
 							 
 							  	  <li class="scroll-to-section"><a href="{{url_for('home')}}">prediction</a></li>
-								   <li class="scroll-to-section"><a href="{{url_for('performance')}}">performance_analysis</a></li>
+								   <li class="scroll-to-section"><a href="{{url_for('performance')}}">Performance Analysis</a></li>
 								   <li class="scroll-to-section"><a href="{{url_for('chart')}}">Chart</a></li>
-								    <li class="scroll-to-section"><a href="{{url_for('first')}}">logout</a></li>
+								    <li class="scroll-to-section"><a href="{{url_for('logout')}}">LOGOUT{% if session.fullname %} ({{session.fullname}}){% endif %}</a></li>
                         </ul>        
                         <a class='menu-trigger'>
                             <span>Menu</span>

@@ -48,49 +48,73 @@ def load_users():
 
 def save_users(users):
     """Save users to JSON file"""
-    with open(USERS_FILE, 'w') as f:
-        json.dump(users, f, indent=2)
+    try:
+        with open(USERS_FILE, 'w') as f:
+            json.dump(users, f, indent=2)
+        print(f"✅ Users saved successfully to {USERS_FILE}")
+    except Exception as e:
+        print(f"❌ Error saving users: {e}")
+        raise
 
 def create_user(fullname, email, username, password):
     """Create a new user account"""
-    users = load_users()
+    try:
+        users = load_users()
+        print(f"📝 Creating user: {username} with email: {email}")
+        
+        # Check if username or email already exists
+        for user_id, user_data in users.items():
+            if user_data['username'] == username:
+                print(f"❌ Username {username} already exists")
+                return False, "Username already exists"
+            if user_data['email'] == email:
+                print(f"❌ Email {email} already registered")
+                return False, "Email already registered"
+        
+        # Create new user
+        user_id = str(len(users) + 1)
+        users[user_id] = {
+            'fullname': fullname,
+            'email': email,
+            'username': username,
+            'password': hash_password(password),
+            'created_at': datetime.now().isoformat(),
+            'last_login': None
+        }
+        
+        save_users(users)
+        print(f"✅ User {username} created successfully with ID: {user_id}")
+        return True, "User created successfully"
     
-    # Check if username or email already exists
-    for user_id, user_data in users.items():
-        if user_data['username'] == username:
-            return False, "Username already exists"
-        if user_data['email'] == email:
-            return False, "Email already registered"
-    
-    # Create new user
-    user_id = str(len(users) + 1)
-    users[user_id] = {
-        'fullname': fullname,
-        'email': email,
-        'username': username,
-        'password': hash_password(password),
-        'created_at': datetime.now().isoformat(),
-        'last_login': None
-    }
-    
-    save_users(users)
-    return True, "User created successfully"
+    except Exception as e:
+        print(f"❌ Error creating user: {e}")
+        return False, f"Error creating user: {str(e)}"
 
 def authenticate_user(username, password):
     """Authenticate user login"""
-    users = load_users()
+    try:
+        users = load_users()
+        print(f"🔐 Attempting login for username: {username}")
+        
+        for user_id, user_data in users.items():
+            if user_data['username'] == username:
+                print(f"👤 Found user: {username}")
+                if verify_password(user_data['password'], password):
+                    print(f"✅ Password verified for user: {username}")
+                    # Update last login
+                    users[user_id]['last_login'] = datetime.now().isoformat()
+                    save_users(users)
+                    return True, user_data
+                else:
+                    print(f"❌ Invalid password for user: {username}")
+                    return False, "Invalid password"
+        
+        print(f"❌ Username not found: {username}")
+        return False, "Username not found"
     
-    for user_id, user_data in users.items():
-        if user_data['username'] == username:
-            if verify_password(user_data['password'], password):
-                # Update last login
-                users[user_id]['last_login'] = datetime.now().isoformat()
-                save_users(users)
-                return True, user_data
-            else:
-                return False, "Invalid password"
-    
-    return False, "Username not found"
+    except Exception as e:
+        print(f"❌ Error during authentication: {e}")
+        return False, f"Authentication error: {str(e)}"
 
 def is_logged_in():
     """Check if user is logged in"""
@@ -467,16 +491,21 @@ def preview():
 @app.route('/login', methods=['GET', 'POST']) 
 def login():
     if request.method == 'POST':
+        print("📝 LOGIN: Processing POST request")
         username = request.form.get('username')
         password = request.form.get('password')
         
+        print(f"📝 LOGIN: Received username: {username}")
+        
         if not username or not password:
+            print("❌ LOGIN: Missing username or password")
             flash('Please fill in all fields', 'error')
             return render_template('login.html')
         
         success, result = authenticate_user(username, password)
         
         if success:
+            print(f"✅ LOGIN: Authentication successful for {username}")
             # Store user session
             users = load_users()
             for user_id, user_data in users.items():
@@ -484,11 +513,13 @@ def login():
                     session['user_id'] = user_id
                     session['username'] = username
                     session['fullname'] = user_data['fullname']
+                    print(f"✅ LOGIN: Session created for user ID: {user_id}")
                     break
             
             flash(f'Welcome back, {result["fullname"]}!', 'success')
             return redirect(url_for('upload'))  # Redirect to main app
         else:
+            print(f"❌ LOGIN: Authentication failed: {result}")
             flash(result, 'error')
             return render_template('login.html')
     
@@ -497,27 +528,34 @@ def login():
 @app.route('/register', methods=['GET', 'POST']) 
 def register():
     if request.method == 'POST':
+        print("📝 REGISTER: Processing POST request")
         fullname = request.form.get('fullname')
         email = request.form.get('email')
         username = request.form.get('username')
         password = request.form.get('password')
         confirm_password = request.form.get('confirm_password')
         
+        print(f"📝 REGISTER: Received data - Name: {fullname}, Email: {email}, Username: {username}")
+        
         # Server-side validation
         if not all([fullname, email, username, password, confirm_password]):
+            print("❌ REGISTER: Missing required fields")
             flash('Please fill in all fields', 'error')
             return render_template('register.html')
         
         if password != confirm_password:
+            print("❌ REGISTER: Passwords do not match")
             flash('Passwords do not match', 'error')
             return render_template('register.html')
         
         if len(password) < 6:
+            print("❌ REGISTER: Password too short")
             flash('Password must be at least 6 characters long', 'error')
             return render_template('register.html')
         
         # Email validation (basic)
         if '@' not in email or '.' not in email:
+            print("❌ REGISTER: Invalid email format")
             flash('Please enter a valid email address', 'error')
             return render_template('register.html')
         
@@ -525,9 +563,21 @@ def register():
         success, message = create_user(fullname, email, username, password)
         
         if success:
-            flash('Registration successful! Please log in.', 'success')
-            return redirect(url_for('login'))
+            print(f"✅ REGISTER: User {username} created successfully")
+            # Automatically log in the user after successful registration
+            users = load_users()
+            for user_id, user_data in users.items():
+                if user_data['username'] == username:
+                    session['user_id'] = user_id
+                    session['username'] = username
+                    session['fullname'] = user_data['fullname']
+                    print(f"✅ REGISTER: Session created for new user ID: {user_id}")
+                    break
+            
+            flash(f'Welcome {fullname}! Registration successful!', 'success')
+            return redirect(url_for('upload'))  # Redirect to main app
         else:
+            print(f"❌ REGISTER: User creation failed: {message}")
             flash(message, 'error')
             return render_template('register.html')
     
@@ -776,6 +826,10 @@ def predict():
                            time = data.time,prediction_text = output)  
 
 if __name__ == "__main__":
+    # Initialize the users database file
+    init_users_file()
+    print("👤 User authentication system initialized")
+    
     import os
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
