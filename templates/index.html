@@ -27,6 +27,9 @@ https://templatemo.com/tm-548-training-studio
     <!-- Responsive CSS -->
     <link rel="stylesheet" href="{{url_for('static', filename='css/responsive.css')}}">
     
+    <!-- Mobile CSS -->
+    <link rel="stylesheet" href="{{url_for('static', filename='css/mobile.css')}}">
+    
     <!-- Mobile optimization meta tags -->
     <meta name="theme-color" content="#ed563b">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -324,27 +327,40 @@ https://templatemo.com/tm-548-training-studio
     <!-- Mobile Navigation Toggle -->
     <script>
     $(document).ready(function() {
-        // Enhanced mobile menu toggle
+        // Enhanced mobile menu toggle with proper state management
         $('.menu-trigger').click(function(e) {
             e.preventDefault();
             e.stopPropagation();
+            console.log('Menu trigger clicked'); // Debug log
+            
             $(this).toggleClass('active');
             $('.main-nav .nav').toggleClass('active');
+            
+            // Animate menu trigger
+            if ($(this).hasClass('active')) {
+                $(this).find('span').addClass('active');
+            } else {
+                $(this).find('span').removeClass('active');
+            }
         });
         
         // Close mobile menu when clicking on a link
-        $('.main-nav .nav li a').click(function() {
+        $('.main-nav .nav li a').click(function(e) {
             if ($(window).width() < 768) {
-                $('.main-nav .nav').removeClass('active');
-                $('.menu-trigger').removeClass('active');
+                setTimeout(function() {
+                    $('.main-nav .nav').removeClass('active');
+                    $('.menu-trigger').removeClass('active');
+                    $('.menu-trigger span').removeClass('active');
+                }, 100);
             }
         });
         
         // Close mobile menu when clicking outside
         $(document).click(function(e) {
-            if (!$(e.target).closest('.main-nav').length) {
+            if (!$(e.target).closest('.main-nav').length && $(window).width() < 768) {
                 $('.main-nav .nav').removeClass('active');
                 $('.menu-trigger').removeClass('active');
+                $('.menu-trigger span').removeClass('active');
             }
         });
         
@@ -353,32 +369,28 @@ https://templatemo.com/tm-548-training-studio
             if ($(window).width() > 767) {
                 $('.main-nav .nav').removeClass('active').removeAttr('style');
                 $('.menu-trigger').removeClass('active');
+                $('.menu-trigger span').removeClass('active');
             }
         });
         
-        // Smooth scrolling for mobile
-        $('a[href^="#"]').on('click', function(e) {
-            e.preventDefault();
-            var target = $(this.getAttribute('href'));
-            if (target.length) {
-                $('html, body').stop().animate({
-                    scrollTop: target.offset().top - 80
-                }, 1000);
-            }
-        });
-        
-        // Enhanced form validation for prediction form
+        // Enhanced form validation for mobile
         $('.prediction-form-wrapper form').on('submit', function(e) {
             var form = $(this);
             var submitBtn = form.find('.predict-btn');
             var originalText = submitBtn.text();
             var valid = true;
             
-            // Validate all required fields
+            // Mobile-specific validation
             form.find('select[required]').each(function() {
                 if (!this.value || this.value === '') {
                     valid = false;
                     $(this).addClass('is-invalid').css('border-color', '#dc3545');
+                    
+                    // Mobile alert for validation
+                    if ($(window).width() < 768) {
+                        $(this).focus();
+                        return false; // Stop at first invalid field
+                    }
                 } else {
                     $(this).removeClass('is-invalid').css('border-color', '#ed563b');
                 }
@@ -386,63 +398,63 @@ https://templatemo.com/tm-548-training-studio
             
             if (!valid) {
                 e.preventDefault();
-                alert('Please fill in all required fields before submitting.');
+                
+                // Mobile-friendly alert
+                if ($(window).width() < 768) {
+                    alert('Please fill in all required fields before submitting.');
+                } else {
+                    alert('Please fill in all required fields before submitting.');
+                }
                 return false;
             }
             
-            // Show loading state only if validation passes
-            submitBtn.html('<i class="fa fa-spinner fa-spin"></i> Predicting...').prop('disabled', true);
+            // Show mobile-optimized loading state
+            if ($(window).width() < 768) {
+                submitBtn.html('<i class="fa fa-spinner fa-spin"></i> Analyzing...').prop('disabled', true);
+            } else {
+                submitBtn.html('<i class="fa fa-spinner fa-spin"></i> Predicting...').prop('disabled', true);
+            }
             
             // Set a timeout to reset button if something goes wrong
             setTimeout(function() {
                 if (submitBtn.prop('disabled')) {
                     submitBtn.html(originalText).prop('disabled', false);
                 }
-            }, 30000); // 30 second timeout
+            }, 30000);
         });
         
-        // Reset button state when page loads (in case of form errors)
-        $('.predict-btn').html('Predict Accident Risk').prop('disabled', false);
+        // Mobile touch optimization
+        if ('ontouchstart' in window) {
+            // Add touch feedback for mobile
+            $('.predict-btn, .form-control, .menu-trigger').on('touchstart', function() {
+                $(this).addClass('touch-active');
+            }).on('touchend', function() {
+                var element = $(this);
+                setTimeout(function() {
+                    element.removeClass('touch-active');
+                }, 100);
+            });
+        }
         
-        // Improve select dropdown behavior and visibility
+        // Improve mobile select dropdown behavior
         if (/Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
             $('select.form-control').each(function() {
                 $(this).css({
                     'appearance': 'none',
                     '-webkit-appearance': 'none',
-                    '-moz-appearance': 'none',
-                    'min-width': '100%',
-                    'width': '100%'
+                    '-moz-appearance': 'none'
+                });
+                
+                // Add mobile-specific styling
+                $(this).on('focus', function() {
+                    $(this).css('transform', 'scale(1.02)');
+                }).on('blur', function() {
+                    $(this).css('transform', 'scale(1)');
                 });
             });
         }
         
-        // Enhanced dropdown styling for better text visibility
-        $('select.form-control').each(function() {
-            $(this).css({
-                'min-width': '320px',
-                'width': '100%',
-                'padding': '14px 40px 14px 16px',
-                'font-size': '14px',
-                'line-height': '1.4',
-                'white-space': 'nowrap'
-            });
-        });
-        
-        // Add title attributes to show full text on hover
-        $('select.form-control option').each(function() {
-            var text = $(this).text();
-            if (text.length > 20) {
-                $(this).attr('title', text);
-            }
-        });
-        
-        // Remove invalid styling when user makes changes
-        $('select.form-control').on('change', function() {
-            $(this).removeClass('is-invalid').css('border-color', '#ed563b');
-        });
-        
-        // Enhanced prediction result animation
+        // Enhanced prediction result animation for mobile
         if ($('.prediction-result').length > 0) {
             setTimeout(function() {
                 $('.prediction-result').addClass('show');
@@ -456,16 +468,28 @@ https://templatemo.com/tm-548-training-studio
             }, 100);
         }
         
-        // Add visual feedback for prediction types
-        $('.prediction-warning').hover(
-            function() { $(this).css('box-shadow', '0 6px 20px rgba(220, 53, 69, 0.3)'); },
-            function() { $(this).css('box-shadow', '0 4px 15px rgba(0, 0, 0, 0.1)'); }
-        );
+        // Mobile form improvements
+        if ($(window).width() < 768) {
+            // Auto-focus prevention on mobile (prevents unwanted zoom)
+            $('input, select, textarea').attr('autocomplete', 'off');
+            
+            // Improve mobile form UX
+            $('select.form-control').on('change', function() {
+                $(this).blur(); // Remove focus after selection
+            });
+            
+            // Add visual feedback for form interactions
+            $('.form-control').on('focus', function() {
+                $(this).parent().addClass('form-focused');
+            }).on('blur', function() {
+                $(this).parent().removeClass('form-focused');
+            });
+        }
         
-        $('.prediction-safe').hover(
-            function() { $(this).css('box-shadow', '0 6px 20px rgba(40, 167, 69, 0.3)'); },
-            function() { $(this).css('box-shadow', '0 4px 15px rgba(0, 0, 0, 0.1)'); }
-        );
+        // Debug mobile issues
+        console.log('Mobile optimization script loaded');
+        console.log('Window width:', $(window).width());
+        console.log('User agent:', navigator.userAgent);
     });
     </script>
 

@@ -26,6 +26,7 @@ https://templatemo.com/tm-548-training-studio
     
     <!-- Responsive CSS -->
     <link rel="stylesheet" href="{{url_for('static', filename='css/responsive.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/mobile.css')}}">
     
     <!-- Mobile optimization meta tags -->
     <meta name="theme-color" content="#ed563b">
@@ -204,7 +205,101 @@ https://templatemo.com/tm-548-training-studio
             window.scrollTo(0, 1);
         }
 
-        // Client-side validation is now handled by HTML5 and server-side validation
+        // Enhanced mobile navigation and form handling
+        $(document).ready(function() {
+            // Enhanced mobile menu toggle with proper state management
+            $('.menu-trigger').click(function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Menu trigger clicked'); // Debug log
+                
+                $(this).toggleClass('active');
+                $('.main-nav .nav').toggleClass('active');
+                
+                // Animate menu trigger
+                if ($(this).hasClass('active')) {
+                    $(this).find('span').addClass('active');
+                } else {
+                    $(this).find('span').removeClass('active');
+                }
+            });
+            
+            // Close mobile menu when clicking on a link
+            $('.main-nav .nav li a').click(function(e) {
+                if ($(window).width() < 768) {
+                    setTimeout(function() {
+                        $('.main-nav .nav').removeClass('active');
+                        $('.menu-trigger').removeClass('active');
+                        $('.menu-trigger span').removeClass('active');
+                    }, 100);
+                }
+            });
+            
+            // Close mobile menu when clicking outside
+            $(document).click(function(e) {
+                if (!$(e.target).closest('.main-nav').length && $(window).width() < 768) {
+                    $('.main-nav .nav').removeClass('active');
+                    $('.menu-trigger').removeClass('active');
+                    $('.menu-trigger span').removeClass('active');
+                }
+            });
+            
+            // Handle window resize
+            $(window).resize(function() {
+                if ($(window).width() > 767) {
+                    $('.main-nav .nav').removeClass('active').removeAttr('style');
+                    $('.menu-trigger').removeClass('active');
+                    $('.menu-trigger span').removeClass('active');
+                }
+            });
+            
+            // Mobile touch optimization for register form
+            if ('ontouchstart' in window) {
+                // Add touch feedback for mobile
+                $('.register-btn, .form-control').on('touchstart', function() {
+                    $(this).addClass('touch-active');
+                }).on('touchend', function() {
+                    var element = $(this);
+                    setTimeout(function() {
+                        element.removeClass('touch-active');
+                    }, 100);
+                });
+            }
+            
+            // Enhanced form validation for mobile
+            $('.register-form form').on('submit', function(e) {
+                var form = $(this);
+                var submitBtn = form.find('.register-btn, .btn-warning');
+                var originalText = submitBtn.text();
+                
+                // Mobile-optimized loading state
+                submitBtn.html('<i class="fa fa-spinner fa-spin"></i> Registering...').prop('disabled', true);
+                
+                // Set a timeout to reset button if something goes wrong
+                setTimeout(function() {
+                    if (submitBtn.prop('disabled')) {
+                        submitBtn.html(originalText).prop('disabled', false);
+                    }
+                }, 10000);
+            });
+            
+            // Mobile form improvements
+            if ($(window).width() < 768) {
+                // Auto-focus prevention on mobile (prevents unwanted zoom)
+                $('input').attr('autocomplete', 'off');
+                
+                // Add visual feedback for form interactions
+                $('.form-control').on('focus', function() {
+                    $(this).parent().addClass('form-focused');
+                }).on('blur', function() {
+                    $(this).parent().removeClass('form-focused');
+                });
+            }
+            
+            // Debug mobile issues
+            console.log('Mobile optimization script loaded for register page');
+            console.log('Window width:', $(window).width());
+        });
 
     </script>
 	
