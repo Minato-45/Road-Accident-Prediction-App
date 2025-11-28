@@ -4,7 +4,7 @@
   <head>
 
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="description" content="">
     <meta name="author" content="">
     <link href="https://fonts.googleapis.com/css?family=Poppins:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&display=swap" rel="stylesheet">
@@ -56,7 +56,7 @@ https://templatemo.com/tm-548-training-studio
                 <div class="col-12">
                     <nav class="main-nav">
                         <!-- ***** Logo Start ***** -->
-                          <a href="index.html" class="logo">Road   <em> Accident</em></a>
+                          <a href="{{url_for('dashboard')}}" class="logo">Road   <em> Accident</em></a>
                         <!-- ***** Logo End ***** -->
                         <!-- ***** Menu Start ***** -->
                          <ul class="nav">
@@ -117,97 +117,153 @@ https://templatemo.com/tm-548-training-studio
                     <div class="schedule-table filtering">
                           </br>
 						  </br>
-						  </br>
 					   <center><h2>CHART</h2></center>
 					   
-					   </br>
-					   </br>
-		  <head>
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script type="text/javascript">
-      google.charts.load("current", {packages:["corechart"]});
-      google.charts.setOnLoadCallback(drawChart);
-      function drawChart() {
-        var data = google.visualization.arrayToDataTable([
-          ['age', 'Hours per Day'],
-          ['< 18 Years',     23.78],
-         
-          ['18 - 25 Years',    32.6],
-		  ['25 - 35 Years',     19.5],
-		  ['35 - 40 Years',     14.56],
-		  ['45 - 60 Years',     18.5],
-		  ['> 60 Years',     7.2],
-        ]);
-
-        var options = {
-          title: '',
-          is3D: true,
-        };
-
-        var chart = new google.visualization.PieChart(document.getElementById('piechart_3d'));
-        chart.draw(data, options);
-      }
-	  
-    </script>
-  </head>
-  <body>
-    <center><h1>Accidents with respect to age</h1></center>
-   
-  <center>  <div id="piechart_3d" style="width: 900px; height: 500px; "></div></center>
-	 
-  </body>
-		  
-		   
-		</br>
-</br>
-</br>
-<html>
-  <head>
-  <center> <h1>Total Accidents In Residentia Area(Male and Female)</h1></center>
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script type="text/javascript">
-      google.charts.load('current', {'packages':['bar']});
-      google.charts.setOnLoadCallback(drawStuff);
-
-      function drawStuff() {
-        var data = new google.visualization.arrayToDataTable([
-          ['state', 'Male', 'Female'],
-          ['Uttar Pradesh', 21000, 23.3],
-          ['Maharashtra', 24000, 4.5],
-          ['Bihar', 30000, 14.3],
-		   ['Tamil Nadu', 30000, 14.3]
-           
-         
-        ]);
-
-        var options = {
-          width: 800,
-          chart: {
-            title: ' ',
-            subtitle: ''
-          },
-          bars: 'vertical', // Required for Material Bar Charts.
-          series: {
-            0: { axis: 'Female' }, // Bind series 0 to an axis named 'distance'.
-            1: { axis: 'Male' } // Bind series 1 to an axis named 'brightness'.
-          },
-          axes: {
-            x: {
-              Female: {label: 'parsecs'}, // Bottom x-axis.
-              Male: {side: 'top', label: 'Gender'} // Top x-axis.
-            }
-          }
-        };
-
-      var chart = new google.charts.Bar(document.getElementById('dual_x_div'));
-      chart.draw(data, options);
-    };
-    </script>
-  </head>
-  <body>
-    <center><div id="dual_x_div" style="width: 900px; height: 500px;"></div></center>
-  </body>
-</html>	
+					   <style>
+					   .chart-container {
+					       max-width: 1200px;
+					       margin: 0 auto;
+					       padding: 20px;
+					       font-family: 'Poppins', sans-serif;
+					   }
+					   
+					   .chart-section {
+					       background: white;
+					       border-radius: 12px;
+					       box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+					       padding: 30px;
+					       margin: 20px 0;
+					   }
+					   
+					   .chart-title {
+					       color: #ed563b;
+					       font-size: 22px;
+					       font-weight: 600;
+					       margin-bottom: 25px;
+					       text-align: center;
+					   }
+					   
+					   .chart-wrapper {
+					       display: flex;
+					       justify-content: center;
+					       align-items: center;
+					       min-height: 500px;
+					   }
+					   
+					   @media (max-width: 768px) {
+					       .chart-container {
+					           padding: 10px;
+					       }
+					       
+					       .chart-section {
+					           padding: 20px;
+					       }
+					       
+					       .chart-title {
+					           font-size: 18px;
+					       }
+					       
+					       #piechart_3d,
+					       #dual_x_div {
+					           width: 100% !important;
+					           min-width: 300px !important;
+					       }
+					   }
+					   </style>
+					   
+					   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+					   
+					   <div class="chart-container">
+					       <!-- Age Distribution Chart -->
+					       <div class="chart-section" style="margin-top: 10px;">
+					           <h3 class="chart-title">Accidents with respect to Age</h3>
+					           <div class="chart-wrapper">
+					               <div id="piechart_3d" style="width: 900px; height: 500px;"></div>
+					           </div>
+					       </div>
+					       
+					       <!-- Gender Distribution Chart -->
+					       <div class="chart-section">
+					           <h3 class="chart-title">Total Accidents In Residential Area (Male and Female)</h3>
+					           <div class="chart-wrapper">
+					               <div id="dual_x_div" style="width: 900px; height: 500px;"></div>
+					           </div>
+					       </div>
+					   </div>
+					   
+					   <script type="text/javascript">
+					   // Age Distribution Pie Chart
+					   google.charts.load("current", {packages:["corechart"]});
+					   google.charts.setOnLoadCallback(drawPieChart);
+					   
+					   function drawPieChart() {
+					       var data = google.visualization.arrayToDataTable([
+					           ['Age Group', 'Percentage'],
+					           ['< 18 Years', 23.78],
+					           ['18 - 25 Years', 32.6],
+					           ['25 - 35 Years', 19.5],
+					           ['35 - 40 Years', 14.56],
+					           ['45 - 60 Years', 18.5],
+					           ['> 60 Years', 7.2]
+					       ]);
+					       
+                       var options = {
+                           title: '',
+                           is3D: true,
+                           colors: ['#4285f4', '#34a853', '#fbbc04', '#ea4335', '#9c27b0', '#ff9800'],
+                           fontSize: 14,
+                           legend: {
+                               position: 'right',
+                               alignment: 'center',
+                               textStyle: {
+                                   fontSize: 14,
+                                   color: '#333'
+                               },
+                               maxLines: 6
+                           },
+                           pieSliceText: 'percentage',
+                           backgroundColor: 'transparent',
+                           pieSliceTextStyle: {
+                               fontSize: 14,
+                               color: '#fff',
+                               bold: true
+                           }
+                       };					       var chart = new google.visualization.PieChart(document.getElementById('piechart_3d'));
+					       chart.draw(data, options);
+					   }
+					   
+					   // Gender Distribution Bar Chart
+					   google.charts.load('current', {'packages':['bar']});
+					   google.charts.setOnLoadCallback(drawBarChart);
+					   
+					   function drawBarChart() {
+					       var data = new google.visualization.arrayToDataTable([
+					           ['State', 'Male', 'Female'],
+					           ['Uttar Pradesh', 21000, 18300],
+					           ['Maharashtra', 24000, 20500],
+					           ['Bihar', 30000, 25300],
+					           ['Tamil Nadu', 28000, 22300]
+					       ]);
+					       
+                       var options = {
+                           colors: ['#2196f3', '#e91e63'],
+                           chart: {
+                               title: '',
+                               subtitle: ''
+                           },
+                           bars: 'vertical',
+                           vAxis: {format: 'decimal'},
+                           height: 500,
+                           fontSize: 14,
+                           backgroundColor: 'transparent',
+                           legend: {
+                               position: 'bottom',
+                               alignment: 'center'
+                           }
+                       };					       var chart = new google.charts.Bar(document.getElementById('dual_x_div'));
+					       chart.draw(data, google.charts.Bar.convertOptions(options));
+					   }
+					   </script>
 		   		
 		   
 		   

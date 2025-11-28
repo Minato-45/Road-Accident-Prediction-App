@@ -439,6 +439,14 @@ print("✅ Prediction system ready!")
 def first():
 	return render_template('first.html')
 
+@app.route('/index')
+def index():
+    """Redirect to dashboard for logged in users, otherwise to first page"""
+    if is_logged_in():
+        return redirect(url_for('dashboard'))
+    else:
+        return redirect(url_for('first'))
+
 @app.route('/upload') 
 def upload():
     if not is_logged_in():
@@ -454,7 +462,7 @@ def preview():
     if request.method == 'POST':
         dataset = request.files['datasetfile']
         df = pd.read_csv(dataset,encoding = 'unicode_escape')
-        df.set_index('Id', inplace=True)
+        # Show complete dataset in preview
         return render_template("preview.html",df_view = df)   
 @app.route('/login', methods=['GET', 'POST']) 
 def login():
@@ -595,9 +603,46 @@ def debug_info():
         "data_states_count": len(data.state) if hasattr(data, 'state') else 0,
         "working_directory": os.getcwd(),
         "python_path": os.environ.get('PYTHONPATH', 'Not set'),
-        "prediction_system": "ML + Rule-based fallback" if model else "Rule-based only"
+        "prediction_system": "ML + Rule-based fallback" if model else "Rule-based only",
+        "session_info": {
+            "user_logged_in": is_logged_in(),
+            "session_keys": list(session.keys()) if session else []
+        }
     }
-    return debug_info     
+    return debug_info
+
+@app.route('/test-predict', methods=['GET'])
+def test_predict():
+    """Simple test route to verify prediction functionality"""
+    if not is_logged_in():
+        return {"error": "Not logged in"}, 401
+    
+    try:
+        # Test with hardcoded values
+        test_features = [1, 4, 4, 1, 0, 3, 1, 0, 3, 4, 11, 7, 1, 2]
+        
+        if model is not None:
+            input_array = np.array([test_features])
+            prediction = model.predict(input_array)
+            result = int(prediction[0])
+            method = "ML"
+        else:
+            result = rule_based_prediction(test_features)
+            method = "Rule-based"
+        
+        return {
+            "success": True,
+            "prediction": result,
+            "method": method,
+            "test_features": test_features,
+            "message": "✅ No accident risk" if result == 0 else "⚠️ Accident risk detected"
+        }
+    except Exception as e:
+        return {
+            "success": False,
+            "error": str(e),
+            "traceback": str(e.__traceback__) if hasattr(e, '__traceback__') else None
+        }, 500     
 
 
 @app.route('/home')
@@ -633,29 +678,36 @@ def dashboard():
 
 @app.route('/predict', methods = ['POST'])
 def predict():
+    print("🚨 Prediction route called")
+    
     if not is_logged_in():
+        print("❌ User not logged in")
         flash('Please log in to use the prediction feature.', 'error')
         return redirect(url_for('login'))
-    # Get prediction using available system
-    global model
-    prediction_result = None
-    prediction_method = "unknown"
-        
-    userFeatures = [x for x in request.form.values()]
-    print(f"📊 User features: {userFeatures}")
-    
-    # Validate that we have the right number of features
-    if len(userFeatures) != 14:
-        print(f"❌ Wrong number of features: expected 14, got {len(userFeatures)}")
-        return render_template('index.html',
-                             states = data.state, junctions = data.junction, vechicleAge = data.vehicle_age, 
-                             humanAgeSex = data.human_age_sex, personWithoutPrecautions = data.person_without_precautions, 
-                             areas = data.area, typeOfPlace = data.type_of_place, vehicleLoad = data.vehicle_load, 
-                             trafficRulesViolation = data.traffic_rules_violation, weather = data.weather, 
-                             vehicleTypeSex = data.vehicle_type_sex, roadType = data.road_type, License = data.license_type, 
-                             time = data.time, prediction_text = "⚠️ Error: Please ensure all fields are filled correctly.")
     
     try:
+        # Get prediction using available system
+        global model
+        prediction_result = None
+        prediction_method = "unknown"
+            
+        userFeatures = [x for x in request.form.values()]
+        print(f"📊 User features received: {userFeatures}")
+        print(f"🔢 Number of features: {len(userFeatures)}")
+        
+        # Validate that we have the right number of features
+        if len(userFeatures) != 14:
+            print(f"❌ Wrong number of features: expected 14, got {len(userFeatures)}")
+            error_message = f"⚠️ Error: Expected 14 features, received {len(userFeatures)}. Please ensure all fields are filled correctly."
+            return render_template('index.html',
+                                 states = data.state, junctions = data.junction, vechicleAge = data.vehicle_age, 
+                                 humanAgeSex = data.human_age_sex, personWithoutPrecautions = data.person_without_precautions, 
+                                 areas = data.area, typeOfPlace = data.type_of_place, vehicleLoad = data.vehicle_load, 
+                                 trafficRulesViolation = data.traffic_rules_violation, weather = data.weather, 
+                                 vehicleTypeSex = data.vehicle_type_sex, roadType = data.road_type, License = data.license_type, 
+                                 time = data.time, prediction_text = error_message)
+        
+        # Create test data dictionary
         testData = {'States/UTs':[userFeatures[0]], 'JUNCTION':[userFeatures[1]], 'VEHICLE AGE':[userFeatures[2]],
                     'HUMAN AGE AND SEX':[userFeatures[3]], 'PERSON WITHOUT SAFETY PRECAUTIONS':[userFeatures[4]],
                     'AREA':[userFeatures[5]], 'TYPE OF PLACE':[userFeatures[6]], 'LOAD OF VEHICLE':[userFeatures[7]],
@@ -680,6 +732,7 @@ def predict():
             try:
                 # Use numpy array directly for better compatibility
                 input_array = np.array([encoded_features])
+                print(f"🧮 Input array shape: {input_array.shape}")
                 prediction = model.predict(input_array)
                 prediction_result = int(prediction[0])
                 prediction_method = "ML"
@@ -702,16 +755,18 @@ def predict():
         
         # Convert prediction to output message
         if prediction_result == 0:
-            output = "No, There is No Chance of Road Accident."
+            output = "✅ No, There is No Chance of Road Accident."
         else:
-            output = "Yes, There is a Chance Of Road Accident! Be Careful."
+            output = "⚠️ Yes, There is a Chance Of Road Accident! Be Careful."
+        
+        print(f"🎯 Final prediction: {output} (Method: {prediction_method})")
             
     except Exception as e:
         print(f"❌ Prediction error: {e}")
         import traceback
         traceback.print_exc()
         # Provide a default prediction based on simple logic
-        output = "Prediction system encountered an error. For safety, please drive carefully and follow all traffic rules."
+        output = "⚠️ Prediction system encountered an error. For safety, please drive carefully and follow all traffic rules."
     
     return render_template('index.html',states = data.state, junctions = data.junction, vechicleAge = data.vehicle_age, 
                            humanAgeSex = data.human_age_sex, personWithoutPrecautions = data.person_without_precautions, 

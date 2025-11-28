@@ -4,7 +4,7 @@
   <head>
 
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="description" content="">
     <meta name="author" content="">
     <link href="https://fonts.googleapis.com/css?family=Poppins:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&display=swap" rel="stylesheet">
@@ -56,14 +56,13 @@ https://templatemo.com/tm-548-training-studio
                 <div class="col-12">
                     <nav class="main-nav">
                         <!-- ***** Logo Start ***** -->
-                          <a href="index.html" class="logo">Road   <em> Accident</em></a>
+                          <a href="{{url_for('first')}}" class="logo">Road   <em> Accident</em></a>
                         <!-- ***** Logo End ***** -->
                         <!-- ***** Menu Start ***** -->
                         <ul class="nav">
                                    <li class="scroll-to-section"><a href="{{url_for('first')}}">Home</a></li>
                             <li class="scroll-to-section"><a href="{{url_for('login')}}">Login</a></li>
-                            <li class="scroll-to-section"><a href="{{url_for('register')}}" class="active">Register</a></li>
-							  <li class="scroll-to-section"><a href="{{url_for('upload')}}">Upload</a></li>
+                            <li class="scroll-to-section"><a href="{{url_for('register')}}">Register</a></li>
 							 
                         </ul>        
                         <a class='menu-trigger'>
@@ -120,7 +119,78 @@ https://templatemo.com/tm-548-training-studio
         
          
 	 <style>
-
+     /* Remove orange background from navigation register button */
+     .header-area .main-nav .nav li a.active {
+         background-color: transparent !important;
+         color: #fff !important;
+         border-radius: 0 !important;
+         font-weight: 500 !important;
+         padding: 0px 20px !important;
+         box-shadow: none !important;
+     }
+     
+     /* Register Button Specific Styling */
+     .register-form-container {
+         background: rgba(255, 255, 255, 0.95);
+         padding: 40px;
+         border-radius: 15px;
+         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+         margin: 20px auto;
+         max-width: 600px;
+     }
+     
+     .register-btn {
+         background: linear-gradient(135deg, #ed563b, #ff6b47) !important;
+         border: none !important;
+         padding: 15px 50px !important;
+         font-size: 18px !important;
+         font-weight: 700 !important;
+         color: white !important;
+         border-radius: 50px !important;
+         text-transform: uppercase !important;
+         letter-spacing: 1px !important;
+         box-shadow: 0 8px 25px rgba(237, 86, 59, 0.4) !important;
+         transition: all 0.3s ease !important;
+         cursor: pointer !important;
+         display: inline-block !important;
+         position: relative !important;
+         z-index: 1000 !important;
+         margin-top: 20px !important;
+         width: auto !important;
+         min-width: 200px !important;
+         text-align: center !important;
+     }
+     
+     .register-btn:hover {
+         transform: translateY(-3px) !important;
+         box-shadow: 0 12px 35px rgba(237, 86, 59, 0.5) !important;
+         background: linear-gradient(135deg, #ff6b47, #ed563b) !important;
+     }
+     
+     .register-btn:active {
+         transform: translateY(-1px) !important;
+         box-shadow: 0 5px 15px rgba(237, 86, 59, 0.3) !important;
+     }
+     
+     .register-btn:focus {
+         outline: none !important;
+         box-shadow: 0 8px 25px rgba(237, 86, 59, 0.4), 0 0 0 3px rgba(237, 86, 59, 0.2) !important;
+     }
+     
+     /* Mobile specific register button */
+     @media (max-width: 768px) {
+         .register-btn {
+             width: 100% !important;
+             padding: 18px 20px !important;
+             font-size: 16px !important;
+             margin-top: 25px !important;
+         }
+         
+         .register-form-container {
+             padding: 25px 20px !important;
+             margin: 15px 10px !important;
+         }
+     }
 
  
  
@@ -159,7 +229,7 @@ https://templatemo.com/tm-548-training-studio
       <div class="row">
 
         <!-- Portfolio Item 1 -->
-        <div class="col-md-8 col-lg-6 col-12" style="margin-left:250px">
+        <div class="col-md-8 col-lg-6 col-12 register-form-container" style="margin: 0 auto; float: none;">
             
             <!-- Flash Messages -->
             {% with messages = get_flashed_messages(with_categories=true) %}
@@ -220,8 +290,8 @@ https://templatemo.com/tm-548-training-studio
                 
                 <!-- Register Button -->
                 <div class="control-group text-center-mobile">
-                    <div class="controls">
-                        <input type="submit" class="btn btn-success" value="Register" style="margin-left: 200px; padding: 10px 30px;">
+                    <div class="controls" style="text-align: center;">
+                        <input type="submit" class="register-btn" value="Register">
                     </div>
                 </div>
             </form>
@@ -229,9 +299,7 @@ https://templatemo.com/tm-548-training-studio
             <!-- Login Link -->
             <div class="control-group">
                 <div class="controls" style="text-align: center; margin-top: 20px;">
-                    <p style="color: #fff;">Already have an account? 
-                        <a href="{{url_for('login')}}" style="color: #ed563b; font-weight: bold;">Login here</a>
-                    </p>
+                    <a href="{{url_for('login')}}" style="color: #ed563b; font-weight: bold; text-decoration: none; display: inline-block;">Login here</a>
                 </div>
             </div>
             

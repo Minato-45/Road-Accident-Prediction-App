@@ -4,7 +4,7 @@
   <head>
 
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="description" content="">
     <meta name="author" content="">
     <link href="https://fonts.googleapis.com/css?family=Poppins:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&display=swap" rel="stylesheet">
@@ -56,7 +56,7 @@ https://templatemo.com/tm-548-training-studio
                 <div class="col-12">
                     <nav class="main-nav">
                         <!-- ***** Logo Start ***** -->
-                           <a href="index.html" class="logo">Road   <em> Accident</em></a>
+                           <a href="{{url_for('dashboard')}}" class="logo">Road   <em> Accident</em></a>
                         <!-- ***** Logo End ***** -->
                         <!-- ***** Menu Start ***** -->
                         <ul class="nav">
@@ -132,17 +132,197 @@ https://templatemo.com/tm-548-training-studio
        
       <!-- About Section Content -->
   
-         <div class="col-md-12 col-sm-12 col-xs-12" style="margin-left:350px;">
+         <div class="col-md-6 col-lg-4 col-12" style="margin: 0 auto; float: none;">
 		  
-          <form action="{{url_for('preview')}}" name="fs" id="fs" method="post" enctype=multipart/form-data>
+          <form action="{{url_for('preview')}}" name="fs" id="fs" method="post" enctype=multipart/form-data class="mobile-friendly-form">
                        <br/>
-                      <input type="file" name="datasetfile" id="file1" required /> 
-                       <br/>
+                      <div class="control-group mb-mobile">
+                          <div class="controls" style="text-align: center;">
+                              <div class="upload-container" id="uploadContainer">
+                                  <div class="upload-box" id="uploadBox">
+                                      <i class="fa fa-cloud-upload upload-icon" style="font-size: 48px; color: #ed563b; margin-bottom: 15px;"></i>
+                                      <h4 style="color: #333; margin-bottom: 10px;">Drop your CSV file here</h4>
+                                      <p style="color: #666; margin-bottom: 15px;">or click to browse</p>
+                                      <span class="file-name" id="fileName" style="color: #ed563b; font-weight: bold;"></span>
+                                  </div>
+                                  <input type="file" name="datasetfile" id="file1" class="file-input" accept=".csv" required /> 
+                              </div>
+                          </div>
+                      </div>
 					   <br/>
-					   <br/>
-                    <input type="submit" style="margin-right:250px" class="btn btn-success btn-large" value="Upload"> 
+                    <div class="control-group text-center-mobile">
+                        <div class="controls" style="text-align: center;">
+                            <input type="submit" class="btn btn-success upload-btn" value="Upload" style="padding: 12px 40px; font-size: 16px;" id="uploadBtn" disabled> 
+                        </div>
+                    </div>
                       </form>
       </div>
+      
+      <style>
+      .upload-container {
+          position: relative;
+          width: 100%;
+          max-width: 400px;
+          margin: 0 auto;
+      }
+      
+      .upload-box {
+          border: 3px dashed #ddd;
+          border-radius: 12px;
+          padding: 40px 20px;
+          text-align: center;
+          background-color: #fafafa;
+          transition: all 0.3s ease;
+          cursor: pointer;
+          min-height: 200px;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+      }
+      
+      .upload-box:hover {
+          border-color: #ed563b;
+          background-color: #fff5f3;
+          transform: translateY(-2px);
+          box-shadow: 0 8px 25px rgba(237, 86, 59, 0.15);
+      }
+      
+      .upload-box.dragover {
+          border-color: #ed563b;
+          background-color: #fff5f3;
+          border-style: solid;
+      }
+      
+      .upload-box.file-selected {
+          border-color: #28a745;
+          background-color: #f8fff9;
+          border-style: solid;
+      }
+      
+      .file-input {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          opacity: 0;
+          cursor: pointer;
+          z-index: 10;
+      }
+      
+      .upload-icon {
+          transition: all 0.3s ease;
+      }
+      
+      .upload-box:hover .upload-icon {
+          transform: scale(1.1);
+          color: #ed563b !important;
+      }
+      
+      .upload-btn:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+      }
+      
+      .file-name {
+          word-break: break-all;
+          max-width: 100%;
+      }
+      
+      @media (max-width: 768px) {
+          .upload-box {
+              padding: 30px 15px;
+              min-height: 180px;
+          }
+          
+          .upload-icon {
+              font-size: 36px !important;
+          }
+      }
+      </style>
+      
+      <script>
+      document.addEventListener('DOMContentLoaded', function() {
+          const uploadBox = document.getElementById('uploadBox');
+          const fileInput = document.getElementById('file1');
+          const fileName = document.getElementById('fileName');
+          const uploadBtn = document.getElementById('uploadBtn');
+          const uploadContainer = document.getElementById('uploadContainer');
+          
+          // Prevent default drag behaviors
+          ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+              uploadContainer.addEventListener(eventName, preventDefaults, false);
+              document.body.addEventListener(eventName, preventDefaults, false);
+          });
+          
+          function preventDefaults(e) {
+              e.preventDefault();
+              e.stopPropagation();
+          }
+          
+          // Highlight drop area when item is dragged over it
+          ['dragenter', 'dragover'].forEach(eventName => {
+              uploadContainer.addEventListener(eventName, highlight, false);
+          });
+          
+          ['dragleave', 'drop'].forEach(eventName => {
+              uploadContainer.addEventListener(eventName, unhighlight, false);
+          });
+          
+          function highlight(e) {
+              uploadBox.classList.add('dragover');
+          }
+          
+          function unhighlight(e) {
+              uploadBox.classList.remove('dragover');
+          }
+          
+          // Handle dropped files
+          uploadContainer.addEventListener('drop', handleDrop, false);
+          
+          function handleDrop(e) {
+              const dt = e.dataTransfer;
+              const files = dt.files;
+              
+              if (files.length > 0) {
+                  const file = files[0];
+                  if (file.name.endsWith('.csv')) {
+                      fileInput.files = files;
+                      handleFileSelect({ target: { files: files } });
+                  } else {
+                      alert('Please select a CSV file only.');
+                  }
+              }
+          }
+          
+          // Handle file selection
+          fileInput.addEventListener('change', handleFileSelect);
+          
+          function handleFileSelect(e) {
+              const files = e.target.files;
+              if (files.length > 0) {
+                  const file = files[0];
+                  fileName.textContent = file.name;
+                  uploadBox.classList.add('file-selected');
+                  uploadBtn.disabled = false;
+                  uploadBtn.style.opacity = '1';
+                  uploadBtn.style.cursor = 'pointer';
+                  
+                  // Update box content for selected file
+                  uploadBox.querySelector('h4').textContent = 'File Selected!';
+                  uploadBox.querySelector('p').textContent = 'Click upload to proceed or select different file';
+                  uploadBox.querySelector('.upload-icon').className = 'fa fa-check-circle upload-icon';
+                  uploadBox.querySelector('.upload-icon').style.color = '#28a745';
+              }
+          }
+          
+          // Click to select file
+          uploadBox.addEventListener('click', function() {
+              fileInput.click();
+          });
+      });
+      </script>
     
   </section>
 

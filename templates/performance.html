@@ -4,7 +4,7 @@
   <head>
 
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="description" content="">
     <meta name="author" content="">
     <link href="https://fonts.googleapis.com/css?family=Poppins:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&display=swap" rel="stylesheet">
@@ -56,7 +56,7 @@ https://templatemo.com/tm-548-training-studio
                 <div class="col-12">
                     <nav class="main-nav">
                         <!-- ***** Logo Start ***** -->
-                          <a href="index.html" class="logo">Road   <em> Accident</em></a>
+                          <a href="{{url_for('dashboard')}}" class="logo">Road   <em> Accident</em></a>
                         <!-- ***** Logo End ***** -->
                         <!-- ***** Menu Start ***** -->
                         <ul class="nav">
@@ -117,43 +117,136 @@ https://templatemo.com/tm-548-training-studio
                     <div class="schedule-table filtering">
                           
 						<center><h2>PERFORMANCE ANALYSIS</h2></center>
-	  <body>
- <div><span style="margin-left:200px;color:green"><font size="12">Precision and recall</font></div>
- </br>
- </br>
- <div><span style="margin-left:450px;color:black"><font size="12">   Recall  Precision </font></div> 
- </br></br>
-<div><span style="margin-left:-200px;color:black"><font size="12">No Road Accident(0)   </font>
-<span style="margin-left:190px;color:black"><font size="12">0.98  0.99   </font>
-</div> 
-</br>
-</br>
-<div><span style="margin-left:-80px;color:black"><font size="12">Road Accident(1)</font>
-<span style="margin-left:160px;color:black"><font size="12">0.95  0.97   </font>
-</div>
-</br>
-</br>    
-  
-</br>
-</br>
-
-<div class="col-lg-8 mx-auto">
-          <!-- To configure the contact form email address, go to mail/contact_me.php and update the email address in the PHP file on line 19. -->
-            
-                       
-                      <div><span style="margin-left:100px;color:red"><font size="12">Confusion Matrix</font></div>
-					  </br>
-					  </br>
-					  
-				<center>	    <div><img style="margin-left:-100px;width:800px;height:500px;" src="{{url_for('static', filename='download.png')}}"></div></center>
-                               
-                         
-						       
-        </div>
-
-
- 
-</body>
+						
+						<style>
+						.performance-container {
+						    max-width: 1200px;
+						    margin: 0 auto;
+						    padding: 20px;
+						    font-family: 'Poppins', sans-serif;
+						}
+						
+						.metrics-section {
+						    background: white;
+						    border-radius: 12px;
+						    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+						    padding: 30px;
+						    margin: 20px 0;
+						}
+						
+						.section-title {
+						    color: #ed563b;
+						    font-size: 24px;
+						    font-weight: 600;
+						    margin-bottom: 25px;
+						    text-align: center;
+						}
+						
+						.metrics-table {
+						    width: 100%;
+						    border-collapse: collapse;
+						    margin: 20px 0;
+						}
+						
+						.metrics-table th {
+						    background-color: #ed563b;
+						    color: white;
+						    padding: 15px;
+						    text-align: center;
+						    font-weight: 600;
+						    border: 1px solid #ddd;
+						}
+						
+						.metrics-table td {
+						    padding: 15px;
+						    text-align: center;
+						    border: 1px solid #ddd;
+						    background-color: #fff;
+						    font-weight: 500;
+						}
+						
+						.metrics-table tr:nth-child(even) td {
+						    background-color: #f8f9fa;
+						}
+						
+						.confusion-matrix-container {
+						    text-align: center;
+						    margin-top: 30px;
+						}
+						
+						.confusion-matrix-img {
+						    max-width: 100%;
+						    width: 600px;
+						    height: 400px;
+						    object-fit: contain;
+						    border-radius: 12px;
+						    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+						    margin: 20px 0;
+						    border: 2px solid #ed563b;
+						}
+						
+						@media (max-width: 768px) {
+						    .performance-container {
+						        padding: 10px;
+						    }
+						    
+						    .metrics-section {
+						        padding: 20px;
+						    }
+						    
+						    .metrics-table th,
+						    .metrics-table td {
+						        padding: 10px 8px;
+						        font-size: 14px;
+						    }
+						    
+						    .section-title {
+						        font-size: 20px;
+						    }
+						    
+						    .confusion-matrix-img {
+						        width: 100%;
+						        height: auto;
+						        min-height: 250px;
+						    }
+						}
+						</style>
+						
+						<div class="performance-container">
+						    <!-- Precision and Recall Section -->
+						    <div class="metrics-section">
+						        <h3 class="section-title">Precision and Recall</h3>
+						        <table class="metrics-table">
+						            <thead>
+						                <tr>
+						                    <th>Class</th>
+						                    <th>Recall</th>
+						                    <th>Precision</th>
+						                </tr>
+						            </thead>
+						            <tbody>
+						                <tr>
+						                    <td><strong style="color: #333; font-size: 16px;">No Road Accident (0)</strong></td>
+						                    <td><strong style="color: #28a745; font-size: 16px;">0.98</strong></td>
+						                    <td><strong style="color: #28a745; font-size: 16px;">0.99</strong></td>
+						                </tr>
+						                <tr>
+						                    <td><strong style="color: #333; font-size: 16px;">Road Accident (1)</strong></td>
+						                    <td><strong style="color: #28a745; font-size: 16px;">0.95</strong></td>
+						                    <td><strong style="color: #28a745; font-size: 16px;">0.97</strong></td>
+						                </tr>
+						            </tbody>
+						        </table>
+						    </div>
+						    
+						    <!-- Confusion Matrix Section -->
+						    <div class="metrics-section">
+						        <h3 class="section-title">Confusion Matrix</h3>
+						        <div class="confusion-matrix-container">
+						            <img src="{{url_for('static', filename='download.png')}}" alt="Confusion Matrix" class="confusion-matrix-img">
+						        </div>
+						    </div>
+						</div>
 		   
 		   
 		   

@@ -4,7 +4,7 @@
   <head>
 
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="description" content="">
     <meta name="author" content="">
     <link href="https://fonts.googleapis.com/css?family=Poppins:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&display=swap" rel="stylesheet">
@@ -57,7 +57,7 @@ https://templatemo.com/tm-548-training-studio
                 <div class="col-12">
                     <nav class="main-nav">
                         <!-- ***** Logo Start ***** -->
-                <a href="index.html" class="logo">Road   <em> Accident</em></a>
+                <a href="{{url_for('dashboard')}}" class="logo">Road   <em> Accident</em></a>
                         <!-- ***** Logo End ***** -->
                         <!-- ***** Menu Start ***** -->
                         <ul class="nav">
@@ -108,200 +108,178 @@ https://templatemo.com/tm-548-training-studio
     
     <section class="section" id="schedule">
         <div class="container">
-          
             <div class="row">
-                
                 <div class="col-lg-10 offset-lg-1">
                     <div class="schedule-table filtering">
-                         <html >
-<!DOCTYPE html>
-<html >
-<head>
-  <meta charset="UTF-8">
- <center> <title>Road Accident occurrence</title>  </center>
-  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css')}}" type="text/css">
-  
-   	 <style>
+                        <div class="prediction-form mobile-friendly">
+                            <center><h1 class="heading">Road Accident Prediction</h1></center>
+                            <div class="container">
+                                <form action="{{ url_for('predict')}}" method="post" class="prediction-form-wrapper">
+                                    <div class="mobile-form-grid">
+                                        <!-- Row 1 -->
+                                        <div class="form-row">
+                                            <div class="form-group">
+                                                <label for="state">State:</label>
+                                                <select name="state" id="state" class="form-control" required>
+                                                    {% for state in states %}
+                                                        <option value="{{state}}">{{state}}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="junction">Junction:</label>
+                                                <select name="junction" id="junction" class="form-control" required>
+                                                    {% for junction in junctions %}
+                                                        <option value="{{junction}}">{{junction}}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <!-- Row 2 -->
+                                        <div class="form-row">
+                                            <div class="form-group">
+                                                <label for="vechicleAge">Vehicle Age:</label>
+                                                <select name="vechicleAge" id="vechicleAge" class="form-control" required>
+                                                    {% for age in vechicleAge %}
+                                                        <option value="{{age}}">{{age}}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="humanAgeSex">Human's Age and Sex:</label>
+                                                <select name="humanAgeSex" id="humanAgeSex" class="form-control" required>
+                                                    {% for age_sex in humanAgeSex %}
+                                                        <option value="{{age_sex}}">{{age_sex}}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
 
+                                        <!-- Row 3 -->
+                                        <div class="form-row">
+                                            <div class="form-group">
+                                                <label for="personWithoutPrecautions">Person Without Precautions:</label>
+                                                <select name="personWithoutPrecautions" id="personWithoutPrecautions" class="form-control" required>
+                                                    {% for person in personWithoutPrecautions %}
+                                                        <option value="{{person}}">{{person}}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="areas">Area:</label>
+                                                <select name="areas" id="areas" class="form-control" required>
+                                                    {% for area in areas %}
+                                                        <option value="{{area}}">{{area}}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
 
-body  {
- 
-background-color: #cccccc;
-}
- 
- 
-    </style>
-</head>
+                                        <!-- Row 4 -->
+                                        <div class="form-row">
+                                            <div class="form-group">
+                                                <label for="typeOfPlace">Type Of Place:</label>
+                                                <select name="typeOfPlace" id="typeOfPlace" class="form-control" required>
+                                                    {% for type in typeOfPlace %}
+                                                        <option value="{{type}}">{{type}}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="vehicleLoad">Vehicle Load:</label>
+                                                <select name="vehicleLoad" id="vehicleLoad" class="form-control" required>
+                                                    {% for load in vehicleLoad %}
+                                                        <option value="{{load}}">{{load}}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
 
-<body>
- <div class="prediction-form mobile-friendly">
-      
- </br>
-<center>	<h1 class= "heading" >Road Accident Prediction</h1></center>
-	 
-	<div class= "container">
-    <form action="{{ url_for('predict')}}" method="post" class="prediction-form-wrapper">
-             <div class="scrollable table-responsive">
-			
-                <table class="prediction-table">
-				<tbody>
-                    <td>State:</td>
-			<td>
-        <select name="state" id="state" required="required">
-            {% for state in states %}
-                <option value="{{state}}">{{state}}</option>
-            {% endfor %}
-        </select>
-    </td>
-                       <td>Junction:</td>
-       
-        <td>
-        <select name="junction" id="junction" required="required" >
-            {% for junction in junctions %}
-                <option value="{{junction}}">{{junction}}</option>
-            {% endfor %}
-        </select>
-		</td>
-						 </tbody>
-                    <!-- Row 1 -->
-                    <tbody>
-                        <td>Vechicle Age:</td>
-	   
-      <td>
-        <select name="vechicleAge" id="vechicleAge" required="required">
-            {% for age in vechicleAge %}
-                <option value="{{age}}">{{age}}</option>
-            {% endfor %}
-        </select>
-     
-        </td>
-                       
-      	  <td>Human's Age and Sex:</td>
-         	<td>
-        <select name="humanAgeSex" id="humanAgeSex" required="required">
-            {% for age_sex in humanAgeSex %}
-                <option value="{{age_sex}}">{{age_sex}}</option>
-            {% endfor %}
-        </select>
-			</td>
-                    </tbody>
-					</br>
-                    <!-- Row 2 -->
-                    <tbody>
-                         <td>Person Without Precautions:</td>
-        	<td>
-        <select name="personWithoutPrecautions" id="personWithoutPrecautions" required="required">
-            {% for person in personWithoutPrecautions %}
-                <option value="{{person}}">{{person}}</option>
-            {% endfor %}
-        </select>
-       
-	   	</td>
-                        <td>Area:</td>
-         	<td>
-        <select name="areas" id="areas" required="required">
-            {% for area in areas %}
-                <option value="{{area}}">{{area}}</option>
-            {% endfor %}
-        </select>
-			</td>
-                    </tbody>
-					</br>
-                    <!-- Row 3 -->
-                      <td>Type Of Place:</td>
-        	<td>
-        <select name="typeOfPlace" id="typeOfPlace" required="required">
-            {% for type in typeOfPlace %}
-                <option value="{{type}}">{{type}}</option>
-            {% endfor %}
-        </select>
-      	</td>
-        <td>Vehicle Load:</td>
-     	<td>
-        <select name="vehicleLoad" id="vehicleLoad" required="required">
-            {% for load in vehicleLoad %}
-                <option value="{{load}}">{{load}}</option>
-            {% endfor %}
-        </select>
-			</td>
-                    </tbody>
-                    <!-- Row 4 --></br>
-                    <tbody>
-                        <td>Traffic Rules Violation:</td>
-       	<td>
-        <select name="trafficRulesViolation" id="trafficRulesViolation" required="required">
-            {% for violation in trafficRulesViolation %}
-                <option value="{{violation}}">{{violation}}</option>
-            {% endfor %}
-        </select>
-  
-        	</td>
-                       <td>Weather:</td>
-       	<td>
-        <select name="weather" id="weather" required="required">
-            {% for w in weather %}
-                <option value="{{w}}">{{w}}</option>
-            {% endfor %}
-        </select>
-			</td>
-                    </tbody>
-                    <!-- Row 5 --></br>
-                    <tbody>
-                          <td>Vehicle Type and Sex:</td>
-     	<td>
-        <select name="vehicleTypeSex" id="vehicleTypeSex" required="required">
-            {% for type in vehicleTypeSex %}
-                <option value="{{type}}">{{type}}</option>
-            {% endfor %}
-        </select>
-    	</td>
-                       <td>Road Type:</td>
-       
-        	<td>
-        <select name="roadType" id="roadType" required="required">
-            {% for type in roadType %}
-                <option value="{{type}}">{{type}}</option>
-            {% endfor %}
-        </select>
-			</td>
-                    </tbody>
-               <tbody>
-                         <td>License Type:</td>
-        	<td>
-        <select name="License" id="License" required="required">
-            {% for type in License %}
-                <option value="{{type}}">{{type}}</option>
-            {% endfor %}
-        </select>
-       	</td>
-        
-                       
-       
-        	 <td>Time:</td>
-        	<td>
-        <select name="time" id="time" required="required">
-            {% for t in time %}
-                <option value="{{t}}">{{t}}</option>
-            {% endfor %}
-        </select>
-			</td>
-                    </tbody>       
-                         
-                </table>
-				</br>
-				</br>
-                <div class="center">
-                  <center>  <button type="submit" class="btn btn-primary btn-block btn-large">Predict</button> </center> 
-                </div>
-            </div>
-        </form>
-		</br>
-		</br>
-		<h1>Prediction is:{{ prediction_text }}</h1>
-						 
-						 
-						 
-						 
+                                        <!-- Row 5 -->
+                                        <div class="form-row">
+                                            <div class="form-group">
+                                                <label for="trafficRulesViolation">Traffic Rules Violation:</label>
+                                                <select name="trafficRulesViolation" id="trafficRulesViolation" class="form-control" required>
+                                                    {% for violation in trafficRulesViolation %}
+                                                        <option value="{{violation}}">{{violation}}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="weather">Weather:</label>
+                                                <select name="weather" id="weather" class="form-control" required>
+                                                    {% for w in weather %}
+                                                        <option value="{{w}}">{{w}}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <!-- Row 6 -->
+                                        <div class="form-row">
+                                            <div class="form-group">
+                                                <label for="vehicleTypeSex">Vehicle Type and Sex:</label>
+                                                <select name="vehicleTypeSex" id="vehicleTypeSex" class="form-control" required>
+                                                    {% for type in vehicleTypeSex %}
+                                                        <option value="{{type}}">{{type}}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="roadType">Road Type:</label>
+                                                <select name="roadType" id="roadType" class="form-control" required>
+                                                    {% for type in roadType %}
+                                                        <option value="{{type}}">{{type}}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <!-- Row 7 -->
+                                        <div class="form-row">
+                                            <div class="form-group">
+                                                <label for="License">License Type:</label>
+                                                <select name="License" id="License" class="form-control" required>
+                                                    {% for type in License %}
+                                                        <option value="{{type}}">{{type}}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="time">Time:</label>
+                                                <select name="time" id="time" class="form-control" required>
+                                                    {% for t in time %}
+                                                        <option value="{{t}}">{{t}}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="text-center mt-4">
+                                        <button type="submit" class="btn btn-primary btn-lg predict-btn">Predict Accident Risk</button>
+                                    </div>
+                                </form>
+
+                                {% if prediction_text %}
+                                <div class="prediction-result mt-4">
+                                    {% if "Yes" in prediction_text or "Chance Of Road Accident" in prediction_text %}
+                                    <div class="alert alert-danger text-center prediction-warning">
+                                        <i class="fa fa-exclamation-triangle" style="font-size: 24px; margin-bottom: 10px;"></i>
+                                        <h3>Prediction Result:</h3>
+                                        <p class="lead">{{ prediction_text }}</p>
+                                    </div>
+                                    {% else %}
+                                    <div class="alert alert-success text-center prediction-safe">
+                                        <i class="fa fa-check-circle" style="font-size: 24px; margin-bottom: 10px;"></i>
+                                        <h3>Prediction Result:</h3>
+                                        <p class="lead">{{ prediction_text }}</p>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -346,16 +324,26 @@ background-color: #cccccc;
     <!-- Mobile Navigation Toggle -->
     <script>
     $(document).ready(function() {
-        // Mobile menu toggle
-        $('.menu-trigger').click(function() {
+        // Enhanced mobile menu toggle
+        $('.menu-trigger').click(function(e) {
+            e.preventDefault();
+            e.stopPropagation();
             $(this).toggleClass('active');
-            $('.main-nav .nav').slideToggle();
+            $('.main-nav .nav').toggleClass('active');
         });
         
         // Close mobile menu when clicking on a link
         $('.main-nav .nav li a').click(function() {
             if ($(window).width() < 768) {
-                $('.main-nav .nav').slideUp();
+                $('.main-nav .nav').removeClass('active');
+                $('.menu-trigger').removeClass('active');
+            }
+        });
+        
+        // Close mobile menu when clicking outside
+        $(document).click(function(e) {
+            if (!$(e.target).closest('.main-nav').length) {
+                $('.main-nav .nav').removeClass('active');
                 $('.menu-trigger').removeClass('active');
             }
         });
@@ -363,10 +351,121 @@ background-color: #cccccc;
         // Handle window resize
         $(window).resize(function() {
             if ($(window).width() > 767) {
-                $('.main-nav .nav').removeAttr('style');
+                $('.main-nav .nav').removeClass('active').removeAttr('style');
                 $('.menu-trigger').removeClass('active');
             }
         });
+        
+        // Smooth scrolling for mobile
+        $('a[href^="#"]').on('click', function(e) {
+            e.preventDefault();
+            var target = $(this.getAttribute('href'));
+            if (target.length) {
+                $('html, body').stop().animate({
+                    scrollTop: target.offset().top - 80
+                }, 1000);
+            }
+        });
+        
+        // Enhanced form validation for prediction form
+        $('.prediction-form-wrapper form').on('submit', function(e) {
+            var form = $(this);
+            var submitBtn = form.find('.predict-btn');
+            var originalText = submitBtn.text();
+            var valid = true;
+            
+            // Validate all required fields
+            form.find('select[required]').each(function() {
+                if (!this.value || this.value === '') {
+                    valid = false;
+                    $(this).addClass('is-invalid').css('border-color', '#dc3545');
+                } else {
+                    $(this).removeClass('is-invalid').css('border-color', '#ed563b');
+                }
+            });
+            
+            if (!valid) {
+                e.preventDefault();
+                alert('Please fill in all required fields before submitting.');
+                return false;
+            }
+            
+            // Show loading state only if validation passes
+            submitBtn.html('<i class="fa fa-spinner fa-spin"></i> Predicting...').prop('disabled', true);
+            
+            // Set a timeout to reset button if something goes wrong
+            setTimeout(function() {
+                if (submitBtn.prop('disabled')) {
+                    submitBtn.html(originalText).prop('disabled', false);
+                }
+            }, 30000); // 30 second timeout
+        });
+        
+        // Reset button state when page loads (in case of form errors)
+        $('.predict-btn').html('Predict Accident Risk').prop('disabled', false);
+        
+        // Improve select dropdown behavior and visibility
+        if (/Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+            $('select.form-control').each(function() {
+                $(this).css({
+                    'appearance': 'none',
+                    '-webkit-appearance': 'none',
+                    '-moz-appearance': 'none',
+                    'min-width': '100%',
+                    'width': '100%'
+                });
+            });
+        }
+        
+        // Enhanced dropdown styling for better text visibility
+        $('select.form-control').each(function() {
+            $(this).css({
+                'min-width': '320px',
+                'width': '100%',
+                'padding': '14px 40px 14px 16px',
+                'font-size': '14px',
+                'line-height': '1.4',
+                'white-space': 'nowrap'
+            });
+        });
+        
+        // Add title attributes to show full text on hover
+        $('select.form-control option').each(function() {
+            var text = $(this).text();
+            if (text.length > 20) {
+                $(this).attr('title', text);
+            }
+        });
+        
+        // Remove invalid styling when user makes changes
+        $('select.form-control').on('change', function() {
+            $(this).removeClass('is-invalid').css('border-color', '#ed563b');
+        });
+        
+        // Enhanced prediction result animation
+        if ($('.prediction-result').length > 0) {
+            setTimeout(function() {
+                $('.prediction-result').addClass('show');
+                
+                // Scroll to prediction result on mobile
+                if ($(window).width() < 768) {
+                    $('html, body').animate({
+                        scrollTop: $('.prediction-result').offset().top - 20
+                    }, 800);
+                }
+            }, 100);
+        }
+        
+        // Add visual feedback for prediction types
+        $('.prediction-warning').hover(
+            function() { $(this).css('box-shadow', '0 6px 20px rgba(220, 53, 69, 0.3)'); },
+            function() { $(this).css('box-shadow', '0 4px 15px rgba(0, 0, 0, 0.1)'); }
+        );
+        
+        $('.prediction-safe').hover(
+            function() { $(this).css('box-shadow', '0 6px 20px rgba(40, 167, 69, 0.3)'); },
+            function() { $(this).css('box-shadow', '0 4px 15px rgba(0, 0, 0, 0.1)'); }
+        );
     });
     </script>
 

@@ -49,8 +49,8 @@ road_type = ['Straight Road', 'Curved Road', 'Bridge', 'Culvert', 'Pot Holes', '
 license_type = ['License Valid Permanent', "Learner's Licence", 'Without Licence']
 
 
-time = ['06-0900hrs - (Day)', '09-1200hrs - (Day)', '12-1500hrs - (Day)', '15-1800hrs - (Day)', '18-2100hrs - (Night)',
-        '21-2400hrs - (Night)', '00-300hrs - (Night)', '03-600hrs - (Night)', 'Unknown Time']
+time = ['6:00 AM - 9:00 AM (Day)', '9:00 AM - 12:00 PM (Day)', '12:00 PM - 3:00 PM (Day)', '3:00 PM - 6:00 PM (Day)', '6:00 PM - 9:00 PM (Night)',
+        '9:00 PM - 12:00 AM (Night)', '12:00 AM - 3:00 AM (Night)', '3:00 AM - 6:00 AM (Night)', 'Unknown Time']
 
 
 columnCodes = {'Andhra Pradesh': 1, 'Arunachal Pradesh': 2, 'Assam': 3, 'Bihar': 4, 'Chhattisgarh': 6, 'Goa': 10, 
@@ -76,6 +76,6 @@ columnCodes = {'Andhra Pradesh': 1, 'Arunachal Pradesh': 2, 'Assam': 3, 'Bihar':
                'Other Motor Vehicles - Male': 9, 'Other Motor Vehicles - Female': 8, 'Straight Road': 7, 
                'Curved Road': 2, 'Bridge': 0, 'Culvert': 1, 'Pot Holes': 5, 'Steep Grade': 6, 
                'Ongoing Road Works/Under Construction': 3, 'License Valid Permanent': 1, "Learner's Licence": 0, 
-               'Without Licence': 2, '06-0900hrs - (Day)': 2, '09-1200hrs - (Day)': 3, '12-1500hrs - (Day)': 4, 
-               '15-1800hrs - (Day)': 5, '18-2100hrs - (Night)': 6, '21-2400hrs - (Night)': 7, '00-300hrs - (Night)': 0, 
-               '03-600hrs - (Night)': 1, 'Unknown Time': 8}
+               'Without Licence': 2, '6:00 AM - 9:00 AM (Day)': 2, '9:00 AM - 12:00 PM (Day)': 3, '12:00 PM - 3:00 PM (Day)': 4, 
+               '3:00 PM - 6:00 PM (Day)': 5, '6:00 PM - 9:00 PM (Night)': 6, '9:00 PM - 12:00 AM (Night)': 7, '12:00 AM - 3:00 AM (Night)': 0, 
+               '3:00 AM - 6:00 AM (Night)': 1, 'Unknown Time': 8}
